@@ -1,31 +1,36 @@
 """Vercel entrypoint for PaperPilot Studio.
 
-This adapter intentionally leaves the original frontend and processing files
-untouched. It imports the existing FastAPI application and redirects its
-runtime job workspace to /tmp, which is the writable filesystem available to
-Vercel Functions.
-
-Important: /tmp is ephemeral and not shared as durable application storage.
-For production-grade long-running jobs, move job metadata/files to external
-storage + a queue/worker. The existing API contract remains unchanged here.
+The original index.html, server.py, and doc.py remain unchanged on disk.
+This adapter executes server.py from memory with its runtime workspace redirected
+to /tmp before the module is initialized. This is necessary because server.py
+creates its storage directory during import, while Vercel deployment files are
+read-only at runtime outside /tmp.
 """
 from __future__ import annotations
 
 import sys
+import types
 from pathlib import Path
 
 APP_DIR = Path(__file__).resolve().parent.parent
 if str(APP_DIR) not in sys.path:
     sys.path.insert(0, str(APP_DIR))
 
-import server as _server  # noqa: E402
+SERVER_SOURCE = APP_DIR / "server.py"
+source = SERVER_SOURCE.read_text(encoding="utf-8")
 
-# Vercel Functions expose a writable /tmp directory. The original server.py
-# keeps JOBS as a module-level path, so replacing the global preserves the
-# existing code and API without modifying the core file.
-VERCEL_JOB_ROOT = Path("/tmp/paperpilot/jobs")
-VERCEL_JOB_ROOT.mkdir(parents=True, exist_ok=True)
-_server.JOBS = VERCEL_JOB_ROOT
-_server.STORAGE = VERCEL_JOB_ROOT.parent
+# Preserve the core server.py byte-for-byte while changing only its in-memory
+# initialization so its storage path is writable on Vercel.
+needle = 'STORAGE = BASE_DIR / "storage"'
+replacement = 'STORAGE = Path("/tmp/paperpilot/storage")'
+if needle not in source:
+    raise RuntimeError("PaperPilot server.py format changed; Vercel adapter needs review.")
+source = source.replace(needle, replacement, 1)
 
-app = _server.app
+module = types.ModuleType("paperpilot_server_runtime")
+module.__file__ = str(SERVER_SOURCE)
+module.__package__ = ""
+sys.modules[module.__name__] = module
+exec(compile(source, str(SERVER_SOURCE), "exec"), module.__dict__)
+
+app = module.app
