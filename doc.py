@@ -144,7 +144,10 @@ def _encode_image(image: Image.Image, fmt: str, quality: int = 85) -> bytes:
     return out.getvalue()
 
 
-def compress_image(input_path: Path, output_dir: Path, quality: int = 75, max_width: int | None = None, max_height: int | None = None) -> OutputFile:
+def compress_image(input_path: Path, output_dir: Path, quality: int = 75, max_width: int | None = None, max_height: int | None = None, compression_level: int | None = None) -> OutputFile:
+    if compression_level is not None:
+        strength = max(10, min(90, int(compression_level)))
+        quality = max(12, min(95, round(100 - strength * 0.82)))
     validate_extension(input_path, IMAGE_EXTENSIONS)
     image = ImageOps.exif_transpose(_open_image(input_path))
     try:
@@ -158,8 +161,11 @@ def compress_image(input_path: Path, output_dir: Path, quality: int = 75, max_wi
         image.close()
 
 
-def compress_images(files: Sequence[Path], output_dir: Path, quality: int = 75, max_width: int | None = None, max_height: int | None = None, callback=None) -> list[OutputFile]:
+def compress_images(files: Sequence[Path], output_dir: Path, quality: int = 75, max_width: int | None = None, max_height: int | None = None, callback=None, compression_level: int | None = None) -> list[OutputFile]:
     if not files: raise ProcessingError("Add at least one image.")
+    if compression_level is not None:
+        strength = max(10, min(90, int(compression_level)))
+        quality = max(12, min(95, round(100 - strength * 0.82)))
     outputs=[]; total=len(files)
     for index, input_path in enumerate(files, 1):
         validate_extension(input_path, IMAGE_EXTENSIONS)
@@ -342,7 +348,40 @@ def rotate_pdf(input_path: Path, angle: int, pages: Sequence[int] | None, output
     return OutputFile(output_path,"application/pdf")
 
 
-def compress_pdf(input_path: Path, output_path: Path, callback=None) -> OutputFile:
+def compress_pdf(input_path: Path, output_path: Path, compression_level: int = 50, callback=None) -> OutputFile:
+    """Compress a PDF using a strength profile from 10..90.
+
+    PDF compression is content-dependent, so the requested percentage is a
+    compression-strength preference rather than a guaranteed exact file-size
+    reduction. We use PyMuPDF's structural cleanup when available and fall
+    back to pypdf stream compression.
+    """
+    strength = max(10, min(90, int(compression_level)))
+    # Map user-facing strength to increasingly aggressive structural cleanup.
+    garbage = 0 if strength < 30 else 2 if strength < 60 else 4
+    if fitz is not None:
+        try:
+            doc = fitz.open(str(input_path))
+            try:
+                total = doc.page_count
+                for index in range(total):
+                    try:
+                        page = doc.load_page(index)
+                        page.clean_contents()
+                    except Exception:
+                        pass
+                    if callback and total:
+                        callback(15 + int((index + 1) / total * 70), f"Optimizing page {index + 1} of {total}")
+                doc.save(str(output_path), garbage=garbage, clean=True, deflate=True, use_objstms=(strength >= 60))
+            finally:
+                doc.close()
+            return OutputFile(output_path, "application/pdf")
+        except Exception:
+            try:
+                output_path.unlink(missing_ok=True)
+            except Exception:
+                pass
+
     reader=_read_pdf(input_path); writer=PdfWriter()
     total=len(reader.pages)
     for index, page in enumerate(reader.pages, 1):
@@ -350,7 +389,7 @@ def compress_pdf(input_path: Path, output_path: Path, callback=None) -> OutputFi
         except Exception: pass
         writer.add_page(page)
         if callback and total: callback(15 + int(index/total*70), f"Optimizing page {index} of {total}")
-    if reader.metadata:
+    if strength < 70 and reader.metadata:
         writer.add_metadata({str(k):str(v) for k,v in reader.metadata.items() if v is not None})
     with output_path.open("wb") as fh: writer.write(fh)
     return OutputFile(output_path,"application/pdf")

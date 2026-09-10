@@ -162,6 +162,7 @@ def _tool_handler(tool: str, saved: list[Path], out: Path, tmp: Path, options: d
     p = options.get("pages") or []
     callback = progress_cb(job_id)
     quality = as_int(options.get("quality"), 75)
+    compression_level = as_int(options.get("compression_level"), 50)
     width = as_int(options.get("width"), 0) or None
     height = as_int(options.get("height"), 0) or None
     output_format = str(options.get("output_format") or ("docx" if tool.lower() == "pdf-converter" else "png"))
@@ -174,10 +175,10 @@ def _tool_handler(tool: str, saved: list[Path], out: Path, tmp: Path, options: d
 
     if tool == "compress-pdf":
         callback(28, "Optimizing PDF streams")
-        return [compress_pdf(saved[0], out / "compressed.pdf", callback=callback)]
+        return [compress_pdf(saved[0], out / "compressed.pdf", compression_level=compression_level, callback=callback)]
     if tool == "compress-image":
         callback(25, "Optimizing images")
-        return compress_images(saved, out, quality=quality, max_width=width, max_height=height, callback=callback)
+        return compress_images(saved, out, quality=quality, max_width=width, max_height=height, compression_level=compression_level, callback=callback)
     if tool == "resize-image":
         return [resize_image(saved[0], out, width, height, fit, as_int(options.get("quality"), 88))]
     if tool == "image-converter":
