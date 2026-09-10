@@ -95,3 +95,7 @@ to a worker/container where those binaries are installed.
 3. Move persistent job/file storage out of `/tmp` before relying on long or
    high-volume jobs.
 4. Move LibreOffice/Ghostscript/Tesseract/Pandoc work to the worker service.
+
+
+## Runtime fix
+This version explicitly points Vercel at `api/index.py` so the root `server.py` is not auto-selected. The adapter keeps the core files unchanged and redirects the server storage initialization to `/tmp`.

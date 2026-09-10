@@ -1,0 +1,18 @@
+[tool.vercel]
+entrypoint = "api.index:app"
+
+[project]
+name = "paperpilot"
+version = "0.0.0"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "python-multipart>=0.0.20,<1",
+  "pillow>=11,<13",
+  "pypdf>=5,<7",
+  "pymupdf>=1.26,<2",
+  "reportlab>=4,<5",
+  "python-docx>=1.2,<2",
+  "openpyxl>=3.1,<4",
+  "python-pptx>=1.0,<2",
+]
