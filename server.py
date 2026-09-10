@@ -8,8 +8,14 @@ from __future__ import annotations
 
 import json
 import re
+import secrets
+import shutil
 import threading
+import time
 import uuid
+import tempfile
+import zipfile
+from urllib.parse import quote
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from typing import Any, Annotated
@@ -17,6 +23,11 @@ from typing import Any, Annotated
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
+
+try:
+    from vercel.blob import AsyncBlobClient
+except Exception:  # Local development can run without Vercel Blob configured.
+    AsyncBlobClient = None
 
 from doc import *  # noqa: F403 - doc.py is the processing boundary by design.
 
@@ -26,7 +37,15 @@ JOBS = STORAGE / "jobs"
 JOBS.mkdir(parents=True, exist_ok=True)
 FRONTEND = BASE_DIR / "index.html"
 MAX_UPLOAD = 250 * 1024 * 1024
+COMPRESSION_DIRECT_LIMIT = 4 * 1024 * 1024
+COMPRESSION_MAX_FILE = 100 * 1024 * 1024
 EXECUTOR = ThreadPoolExecutor(max_workers=2, thread_name_prefix="paperpilot")
+
+# How long a completed/errored job's files and status stay reachable before
+# the background reaper deletes them. Queued/processing jobs are never
+# reaped, however old, since they may still be doing real work.
+JOB_TTL_SECONDS = 60 * 60  # 1 hour
+JOB_REAPER_INTERVAL_SECONDS = 5 * 60  # sweep every 5 minutes
 
 ALLOWED = {
     ".pdf", ".jpg", ".jpeg", ".png", ".webp", ".bmp", ".gif", ".tif", ".tiff", ".ico", ".ppm", ".pgm", ".pbm", ".avif",
@@ -46,7 +65,25 @@ def ext(name: str | None) -> str:
 
 
 def safe_job_id(value: str) -> str:
-    return re.sub(r"[^a-f0-9]", "", value.lower())
+    return re.sub(r"[^a-f0-9]", "", (value or "").lower())
+
+
+def new_job_token() -> str:
+    """Unguessable per-job secret. Required alongside the job id to read
+    status or download files, so a job id alone (which can leak through
+    logs, browser history, or referrers) isn't enough to access someone
+    else's documents."""
+    return secrets.token_hex(16)
+
+
+def check_job_token(job_id: str, token: str | None) -> None:
+    with _STATE_LOCK:
+        state = STATE.get(job_id)
+    if not state:
+        raise HTTPException(404, "Job not found")
+    expected = state.get("_token")
+    if not expected or not token or not secrets.compare_digest(token, expected):
+        raise HTTPException(404, "Job not found")
 
 
 def parse_json(v: str | None, default: Any):
@@ -119,9 +156,68 @@ def validate_upload(upload: UploadFile):
         raise HTTPException(400, f"Unsupported file type: {upload.filename or 'unknown'}")
 
 
-def response_payload(job_id: str, outputs: list[OutputFile], original_bytes: int = 0) -> dict[str, Any]:
+def _require_blob_client():
+    if AsyncBlobClient is None:
+        raise HTTPException(
+            503,
+            "Large-file compression requires Vercel Blob. Connect a Blob store to this Vercel project first.",
+        )
+    return AsyncBlobClient()
+
+
+async def download_private_blob(pathname: str, dest: Path) -> int:
+    if not pathname.startswith("paperpilot/inputs/"):
+        raise HTTPException(400, "Invalid blob pathname.")
+    client = _require_blob_client()
+    result = await client.get(pathname, access="private")
+    if result is None or result.status_code != 200 or result.stream is None:
+        raise HTTPException(404, "Input file was not found in Blob storage.")
+    size = 0
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with dest.open("wb") as fh:
+        async for chunk in result.stream:
+            size += len(chunk)
+            if size > COMPRESSION_MAX_FILE:
+                dest.unlink(missing_ok=True)
+                raise HTTPException(413, "Compression supports files up to 100 MB each.")
+            fh.write(chunk)
+    return size
+
+
+async def upload_private_blob(path: Path, media_type: str, prefix: str = "paperpilot/outputs/") -> str:
+    client = _require_blob_client()
+    data = path.read_bytes()
+    blob = await client.put(
+        f"{prefix}{uuid.uuid4().hex}-{safe_name(path.name)}",
+        data,
+        access="private",
+        add_random_suffix=False,
+        content_type=media_type,
+    )
+    pathname = getattr(blob, "pathname", None)
+    if pathname is None and isinstance(blob, dict):
+        pathname = blob.get("pathname")
+    if not pathname:
+        raise HTTPException(500, "Compression output was uploaded without a pathname.")
+    return str(pathname)
+
+
+async def delete_private_blob(pathname: str) -> None:
+    if not pathname or not pathname.startswith("paperpilot/inputs/") and not pathname.startswith("paperpilot/outputs/"):
+        return
+    if AsyncBlobClient is None:
+        return
+    try:
+        client = AsyncBlobClient()
+        await client.delete(pathname)
+    except Exception:
+        pass
+
+
+def response_payload(job_id: str, outputs: list[OutputFile], original_bytes: int = 0, token: str | None = None) -> dict[str, Any]:
     files = []
     total = 0
+    query = f"?token={token}" if token else ""
     for item in outputs:
         p = item.path
         if not p.exists() or not p.is_file():
@@ -130,7 +226,7 @@ def response_payload(job_id: str, outputs: list[OutputFile], original_bytes: int
         total += size
         files.append({
             "name": p.name,
-            "url": f"/api/files/{job_id}/{safe_name(p.name)}",
+            "url": f"/api/files/{job_id}/{safe_name(p.name)}{query}",
             "media_type": item.media_type,
             "size": size,
         })
@@ -147,8 +243,20 @@ def set_state(job_id: str, **patch: Any) -> None:
 
 
 def public_state(job_id: str) -> dict[str, Any]:
+    """Full internal state, including the access token. Never return this
+    directly from an HTTP handler — use externally_visible_state() instead."""
     with _STATE_LOCK:
         state = dict(STATE.get(job_id, {}))
+    return state
+
+
+def externally_visible_state(job_id: str) -> dict[str, Any]:
+    """Job state safe to send back over the API: internal bookkeeping keys
+    (the access token, absolute reaper timestamp) are stripped so the token
+    can never leak back out through the status response itself."""
+    state = public_state(job_id)
+    state.pop("_token", None)
+    state.pop("completed_at", None)
     return state
 
 
@@ -156,6 +264,62 @@ def progress_cb(job_id: str):
     def update(progress: int, stage: str):
         set_state(job_id, progress=max(0, min(100, int(progress))), stage=stage)
     return update
+
+
+def _reap_expired_jobs() -> None:
+    """Delete files and forget state for jobs that finished (or errored) more
+    than JOB_TTL_SECONDS ago. Queued/processing jobs are left alone no matter
+    their age, since they may still be doing real work; a job only becomes
+    eligible for reaping once it has a completed_at timestamp.
+
+    Also sweeps storage/jobs for directories with no matching in-memory
+    STATE entry at all (e.g. left over from a server restart, since STATE is
+    in-process only and doesn't survive one) — those are removed immediately
+    since nothing can ever reach them again without STATE.
+    """
+    now = time.time()
+    expired: list[str] = []
+    with _STATE_LOCK:
+        for job_id, state in STATE.items():
+            completed_at = state.get("completed_at")
+            if completed_at is not None and now - completed_at > JOB_TTL_SECONDS:
+                expired.append(job_id)
+        for job_id in expired:
+            STATE.pop(job_id, None)
+        known_ids = set(STATE.keys())
+    for job_id in expired:
+        cleanup_job_dir(JOBS, job_id)
+    try:
+        for child in JOBS.iterdir():
+            if child.is_dir() and child.name not in known_ids:
+                shutil.rmtree(child, ignore_errors=True)
+    except FileNotFoundError:
+        pass
+
+
+def _reaper_loop() -> None:
+    while True:
+        time.sleep(JOB_REAPER_INTERVAL_SECONDS)
+        try:
+            _reap_expired_jobs()
+        except Exception:
+            # The reaper must never crash the process; a failed sweep just
+            # means we retry on the next interval.
+            pass
+
+
+@app.on_event("startup")
+def _start_reaper() -> None:
+    # Clear out anything left on disk from a previous process (STATE is
+    # in-memory only, so a restart would otherwise orphan those files
+    # forever with nothing left to reap them).
+    try:
+        for child in JOBS.iterdir():
+            if child.is_dir():
+                shutil.rmtree(child, ignore_errors=True)
+    except FileNotFoundError:
+        pass
+    threading.Thread(target=_reaper_loop, name="paperpilot-job-reaper", daemon=True).start()
 
 
 def _tool_handler(tool: str, saved: list[Path], out: Path, tmp: Path, options: dict[str, Any], job_id: str) -> list[OutputFile]:
@@ -280,18 +444,20 @@ def _tool_handler(tool: str, saved: list[Path], out: Path, tmp: Path, options: d
 def _run_job(job_id: str, tool: str, input_files: list[Path], original_bytes: int, options: dict[str, Any]) -> None:
     inp, out, tmp = build_job_dir(JOBS, job_id)
     saved = input_files
+    token = public_state(job_id).get("_token")
     try:
         set_state(job_id, status="processing", progress=4, stage="Preparing workspace")
         outputs = _tool_handler(tool, saved, out, tmp, options, job_id)
-        payload = response_payload(job_id, outputs, original_bytes)
+        payload = response_payload(job_id, outputs, original_bytes, token=token)
         payload.pop("job_id", None)
         payload["original_bytes"] = original_bytes
         payload["status"] = "completed"
         payload["progress"] = 100
         payload["stage"] = "Complete"
-        set_state(job_id, **payload)
+        payload["expires_in_seconds"] = JOB_TTL_SECONDS
+        set_state(job_id, **payload, completed_at=time.time())
     except Exception as exc:
-        set_state(job_id, status="error", progress=100, stage="Failed", error=str(exc))
+        set_state(job_id, status="error", progress=100, stage="Failed", error=str(exc), completed_at=time.time())
 
 
 async def _create_job(tool_id: str, uploads: list[UploadFile], options: dict[str, Any]) -> str:
@@ -300,6 +466,7 @@ async def _create_job(tool_id: str, uploads: list[UploadFile], options: dict[str
     for upload in uploads:
         validate_upload(upload)
     job_id = uuid.uuid4().hex
+    token = new_job_token()
     inp, _, _ = build_job_dir(JOBS, job_id)
     saved: list[Path] = []
     total = 0
@@ -314,10 +481,222 @@ async def _create_job(tool_id: str, uploads: list[UploadFile], options: dict[str
         raise
     STATE[job_id] = {
         "job_id": job_id, "status": "queued", "progress": 0, "stage": "Queued",
-        "tool": tool_id, "original_bytes": total, "files": [],
+        "tool": tool_id, "original_bytes": total, "files": [], "_token": token,
+        "created_at": time.time(),
     }
     EXECUTOR.submit(_run_job, job_id, tool_id, saved, total, options)
-    return job_id
+    # The client only ever sees job_id + token concatenated as one opaque
+    # handle. Both are required to look up status or download files, so
+    # observing/guessing job_id alone (e.g. from logs or a referrer header)
+    # is not enough to access someone else's files.
+    return f"{job_id}.{token}"
+
+
+def _split_handle(handle: str) -> tuple[str, str | None]:
+    if "." in handle:
+        job_id, token = handle.split(".", 1)
+        return safe_job_id(job_id), re.sub(r"[^a-f0-9]", "", (token or "").lower()) or None
+    return safe_job_id(handle), None
+
+
+@app.post("/api/compress-from-blob")
+async def compress_from_blob(payload: dict[str, Any]):
+    """Compress files that were uploaded directly to Vercel Blob.
+
+    The browser never sends the large file through the Vercel Function. The
+    function receives only small JSON metadata, downloads the private Blob into
+    /tmp, runs the existing compression engine, uploads the result back to
+    Blob, and returns a small JSON response containing a signed-download route.
+    """
+    tool_id = str(payload.get("tool_id") or "").lower()
+    if tool_id not in {"compress-pdf", "compress-image"}:
+        raise HTTPException(400, "This endpoint is only for PDF and image compression.")
+
+    entries = payload.get("files")
+    if not isinstance(entries, list) or not entries:
+        raise HTTPException(400, "Add at least one file.")
+    if len(entries) > 25:
+        raise HTTPException(400, "Too many files in one compression batch.")
+
+    for entry in entries:
+        if not isinstance(entry, dict):
+            raise HTTPException(400, "Invalid uploaded file metadata.")
+        size = as_int(entry.get("size"), 0)
+        pathname = str(entry.get("pathname") or "")
+        if size <= 0 or size > COMPRESSION_MAX_FILE:
+            raise HTTPException(413, "Compression supports files up to 100 MB each.")
+        if not pathname.startswith("paperpilot/inputs/"):
+            raise HTTPException(400, "Invalid Blob input path.")
+
+    level = max(10, min(90, as_int(payload.get("compression_level"), 50)))
+    q = max(10, min(100, as_int(payload.get("quality"), 75)))
+    max_width = as_int(payload.get("width"), 0) or None
+    max_height = as_int(payload.get("height"), 0) or None
+
+    job_id = uuid.uuid4().hex
+    base = Path(tempfile.mkdtemp(prefix=f"paperpilot-blob-compress-{job_id}-"))
+    inp = base / "inputs"
+    out = base / "outputs"
+    inp.mkdir(parents=True, exist_ok=True)
+    out.mkdir(parents=True, exist_ok=True)
+    uploaded_paths: list[str] = []
+    saved_inputs: list[Path] = []
+    original_total = 0
+
+    try:
+        for idx, entry in enumerate(entries, 1):
+            pathname = str(entry["pathname"])
+            uploaded_paths.append(pathname)
+            name = safe_name(str(entry.get("name") or f"{idx}.bin"), f"{idx}.bin")
+            suffix = ext(name) or ".bin"
+            target = inp / f"{idx:03d}{suffix}"
+            actual_size = await download_private_blob(pathname, target)
+            original_total += actual_size
+            saved_inputs.append(target)
+
+        callback = lambda _p, _s: None
+        if tool_id == "compress-pdf":
+            output = out / "compressed.pdf"
+            result = compress_pdf(
+                saved_inputs[0],
+                output,
+                compression_level=level,
+                callback=callback,
+            )
+            filename = "compressed.pdf"
+            media_type = result.media_type
+        else:
+            outputs = compress_images(
+                saved_inputs,
+                out,
+                quality=q,
+                max_width=max_width,
+                max_height=max_height,
+                compression_level=level,
+                callback=callback,
+            )
+            if len(outputs) == 1:
+                output = outputs[0].path
+                filename = output.name
+                media_type = outputs[0].media_type
+            else:
+                output = out / "compressed-images.zip"
+                with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as zf:
+                    for item in outputs:
+                        zf.write(item.path, arcname=item.path.name)
+                filename = output.name
+                media_type = "application/zip"
+
+        if not output.exists() or not output.is_file():
+            raise HTTPException(500, "Compression finished without producing an output file.")
+
+        output_size = output.stat().st_size
+        savings = round(max(0, (1 - output_size / original_total) * 100), 1) if original_total else 0
+        output_pathname = await upload_private_blob(output, media_type)
+
+        return {
+            "status": "completed",
+            "message": "Your compressed file is ready.",
+            "files": [{
+                "name": filename,
+                "size": output_size,
+                "media_type": media_type,
+                "url": f"/api/blob-download?pathname={quote(output_pathname, safe='')}",
+                "blob_pathname": output_pathname,
+            }],
+            "original_bytes": original_total,
+            "total_output_bytes": output_size,
+            "compression_savings_percent": savings,
+        }
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(500, f"Compression failed: {exc}") from exc
+    finally:
+        for pathname in uploaded_paths:
+            await delete_private_blob(pathname)
+        shutil.rmtree(base, ignore_errors=True)
+
+
+@app.post("/api/compress")
+async def compress_direct(
+    tool_id: Annotated[str, Form()],
+    files: Annotated[list[UploadFile], File()],
+    compression_level: Annotated[int | None, Form()] = 50,
+    quality: Annotated[int | None, Form()] = 75,
+    width: Annotated[int | None, Form()] = None,
+    height: Annotated[int | None, Form()] = None,
+):
+    """Synchronous compression endpoint for Vercel/serverless runtimes.
+
+    The original async /api/jobs endpoint relies on a process-local executor and
+    in-memory state, which is not a reliable completion mechanism after a
+    serverless response returns. Compression is bounded and can execute inside
+    one request, so this endpoint returns the output bytes directly.
+    """
+    if tool_id not in {"compress-pdf", "compress-image"}:
+        raise HTTPException(400, "This endpoint is only for PDF and image compression.")
+    if not files:
+        raise HTTPException(400, "Add at least one file.")
+    for upload in files:
+        validate_upload(upload)
+
+    level = max(10, min(90, as_int(compression_level, 50)))
+    q = max(10, min(100, as_int(quality, 75)))
+    max_width = as_int(width, 0) or None
+    max_height = as_int(height, 0) or None
+
+    job_id = uuid.uuid4().hex
+    base = Path(tempfile.mkdtemp(prefix=f"paperpilot-compress-{job_id}-"))
+    inp = base / "inputs"
+    out = base / "outputs"
+    inp.mkdir(parents=True, exist_ok=True)
+    out.mkdir(parents=True, exist_ok=True)
+    original_total = 0
+    saved_inputs: list[Path] = []
+    try:
+        for idx, upload in enumerate(files, 1):
+            target = inp / f"{idx:03d}{ext(upload.filename) or '.bin'}"
+            original_total += await save_upload(upload, target)
+            saved_inputs.append(target)
+            await upload.close()
+
+        callback = lambda _p, _s: None
+        if tool_id == "compress-pdf":
+            output = out / "compressed.pdf"
+            result = compress_pdf(saved_inputs[0], output, compression_level=level, callback=callback)
+            filename = "compressed.pdf"
+            media_type = result.media_type
+        else:
+            outputs = compress_images(saved_inputs, out, quality=q, max_width=max_width, max_height=max_height, compression_level=level, callback=callback)
+            if len(outputs) == 1:
+                result = outputs[0]
+                output = result.path
+                filename = output.name
+                media_type = result.media_type
+            else:
+                output = out / "compressed-images.zip"
+                with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as zf:
+                    for item in outputs:
+                        zf.write(item.path, arcname=item.path.name)
+                filename = output.name
+                media_type = "application/zip"
+
+        if not output.exists():
+            raise HTTPException(500, "Compression finished without producing an output file.")
+        output_size = output.stat().st_size
+        savings = round(max(0, (1 - output_size / original_total) * 100), 1) if original_total else 0
+        headers = {
+            "X-PaperPilot-Original-Bytes": str(original_total),
+            "X-PaperPilot-Output-Bytes": str(output_size),
+            "X-PaperPilot-Savings": str(savings),
+            "Cache-Control": "no-store",
+        }
+        return FileResponse(output, media_type=media_type, filename=filename, headers=headers)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        raise HTTPException(500, f"Compression failed: {exc}") from exc
 
 
 @app.get("/api/health")
@@ -332,10 +711,11 @@ def home():
     return FileResponse(FRONTEND)
 
 
-@app.get("/api/jobs/{job_id}")
-def job_status(job_id: str):
-    job_id = safe_job_id(job_id)
-    state = public_state(job_id)
+@app.get("/api/jobs/{job_handle}")
+def job_status(job_handle: str, token: str | None = None):
+    job_id, embedded_token = _split_handle(job_handle)
+    check_job_token(job_id, token or embedded_token)
+    state = externally_visible_state(job_id)
     if not state:
         raise HTTPException(404, "Job not found")
     return state
@@ -354,8 +734,10 @@ async def create_job(
     return JSONResponse({"job_id": job_id, "status_url": f"/api/jobs/{job_id}"}, status_code=202)
 
 
-@app.get("/api/files/{job_id}/{filename}")
-def file_download(job_id: str, filename: str):
+@app.get("/api/files/{job_handle}/{filename}")
+def file_download(job_handle: str, filename: str, token: str | None = None):
+    job_id, embedded_token = _split_handle(job_handle)
+    check_job_token(job_id, token or embedded_token)
     requested = (JOBS / safe_job_name(job_id) / "outputs" / safe_name(filename)).resolve()
     root = (JOBS / safe_job_name(job_id) / "outputs").resolve()
     if requested.parent != root or not requested.exists() or not requested.is_file():
@@ -397,15 +779,15 @@ async def process_tool_compat(
             "password": password, "question": question, "target_language": target_language,
         }.items() if v not in (None, "", [])
     })
-    job_id = await _create_job(tool_id, files, options_dict)
+    job_handle = await _create_job(tool_id, files, options_dict)
+    job_id, _ = _split_handle(job_handle)
     # Backward compatibility: wait for completion, but still use the same job engine.
     for _ in range(180):
-        state = public_state(job_id)
+        state = externally_visible_state(job_id)
         if state.get("status") in {"completed", "error"}:
             if state.get("status") == "error":
                 raise HTTPException(400, state.get("error", "Processing failed."))
             return state
-        import time
         time.sleep(0.1)
     raise HTTPException(504, "Processing is taking longer than expected. Use the asynchronous /api/jobs endpoint.")
 

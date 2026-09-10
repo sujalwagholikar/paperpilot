@@ -7,11 +7,11 @@
 <meta name="color-scheme" content="light only">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:GRAD,opsz,ROND,wdth,wght@0..100,6..144,0..100,25..151,1..1000&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
 <title>PaperPilot — PDF, Image & Document Tools</title>
 <style>
 :root{color-scheme:light;--bg:#fff;--surface:#fff;--soft:#f7f8fa;--soft2:#f1f3f5;--line:#d9dde3;--line2:#e9ecf0;--text:#17191c;--muted:#5f6670;--dim:#8b929b;--blue:#1473e6;--blue2:#0b63c9;--blueSoft:#edf5ff;--green:#1f9d61;--shadow:0 18px 50px rgba(24,39,75,.09);--shadow2:0 8px 30px rgba(24,39,75,.08);--radius:10px;--max:1260px}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"Google Sans Flex",Arial,sans-serif;line-height:1.45;font-optical-sizing:auto;font-variation-settings:"wdth" 100,"GRAD" 0,"ROND" 0;-webkit-font-smoothing:antialiased}.container{width:min(var(--max),calc(100% - 48px));margin:auto}button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"Lato",Arial,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased}.container{width:min(var(--max),calc(100% - 48px));margin:auto}button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
 .topbar{position:sticky;top:0;z-index:80;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--line2)}.nav{height:74px;display:flex;align-items:center;gap:12px}.brand{display:flex;align-items:center;gap:11px;min-width:185px;font-size:19px;font-weight:850;letter-spacing:-.03em}.brandmark{width:34px;height:34px;border-radius:9px;background:conic-gradient(#ffb400 0 25%,#ff5a6f 0 50%,#7e69ff 0 75%,#1bc6ac 0);position:relative;box-shadow:0 6px 16px rgba(60,70,90,.12)}.brandmark:after{content:"";position:absolute;inset:8px;border-radius:4px;background:#fff}.navlinks{display:flex;align-items:center;gap:3px}.navlinks a,.tools-btn{padding:11px 13px;border-radius:8px;color:#24272b;font-weight:650}.navlinks a:hover,.tools-btn:hover{background:var(--soft)}.tools-btn{border:1px solid var(--line);background:#fff;display:flex;gap:9px;align-items:center}.gridicon{display:grid;grid-template-columns:repeat(3,4px);gap:2px}.gridicon i{width:4px;height:4px;border-radius:1px;background:#222;display:block}.navright{margin-left:auto;display:flex;gap:9px;align-items:center}.navright .link{padding:11px 12px;font-weight:650;color:#24272b}.ghost,.primary{border-radius:8px;padding:11px 16px;font-weight:780;border:1px solid var(--line);background:#fff;color:var(--text)}.ghost:hover{background:var(--soft)}.primary{background:var(--blue);border-color:var(--blue);color:#fff}.primary:hover{background:var(--blue2)}.mobile-toggle{display:none;border:0;background:transparent;font-size:23px}.dropdown{position:absolute;top:68px;left:195px;width:420px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:12px;display:none}.dropdown.show{display:grid;grid-template-columns:1fr 1fr}.dropgroup{padding:8px}.dropgroup h4{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin:6px 10px}.dropgroup a{display:block;padding:10px;border-radius:7px;font-size:13px;color:#30343a}.dropgroup a:hover{background:var(--soft)}
 .hero{padding:90px 0 90px;min-height:610px;background:#fff}
 .hero-inner{width:min(1520px,calc(100% - 120px));margin:0 auto;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(520px,.98fr);gap:54px;align-items:center}.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--soft);padding:7px 11px;border-radius:999px;color:#3b4148;font-weight:730;font-size:12px}.hero h1{margin:18px 0 22px;font-size:clamp(52px,6vw,82px);line-height:.98;letter-spacing:-.055em;font-weight:900;max-width:740px}.hero p{font-size:20px;color:var(--muted);max-width:690px;margin:0 0 32px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.hero-note{display:flex;gap:18px;margin-top:24px;flex-wrap:wrap;color:#6d747d;font-size:13px}.hero-note span{display:flex;gap:7px;align-items:center}.hero-visual{position:relative;min-height:420px}.paper{position:absolute;inset:36px 18px 8px 25px;background:#f5f7fb;transform:rotate(-6deg);border-radius:16px;box-shadow:0 34px 65px rgba(25,45,80,.12)}.paper2{position:absolute;inset:78px 18px 32px 92px;background:#fff;transform:rotate(4deg);border-radius:16px;border:1px solid #dde2e8;box-shadow:0 28px 55px rgba(25,45,80,.13)}.mock-app{position:absolute;inset:98px 55px 58px 105px;background:#fff;border:1px solid #dfe4e9;border-radius:12px;box-shadow:0 20px 44px rgba(25,45,80,.12);padding:18px}.mock-top{height:24px;display:flex;gap:7px;align-items:center;border-bottom:1px solid #e9edf1}.mock-dot{width:7px;height:7px;border-radius:50%;background:#c9ced4}.mock-body{display:grid;grid-template-columns:72px 1fr;gap:14px;padding-top:14px}.mock-side{display:grid;gap:8px}.mock-side div{height:22px;border-radius:5px;background:#eef1f5}.mock-side div:first-child{background:#e3efff}.mock-page{border:1px solid #e0e4ea;border-radius:8px;padding:15px}.mock-toolbar{display:flex;gap:6px;margin-bottom:13px}.mock-toolbar i{width:22px;height:22px;border-radius:5px;background:#e9edf1}.mock-line{height:7px;border-radius:10px;background:#e4e7eb;margin:9px 0}.mock-line.s{width:45%}.mock-line.m{width:72%}.mock-line.l{width:92%}.floating{position:absolute;background:#fff;border:1px solid #e1e5e9;border-radius:10px;padding:11px 12px;box-shadow:var(--shadow2);font-weight:800;font-size:12px}.float1{top:40px;right:-5px}.float2{bottom:42px;left:0}.float3{top:184px;right:-17px}.float4{bottom:14px;right:42px;color:var(--green)}
@@ -121,6 +121,22 @@ body.tool-open .tool-page{display:block;animation:toolPageIn .42s ease both}
 @media(max-width:980px){.tool-workbench{grid-template-columns:1fr}.tp-side{grid-template-columns:1fr 1fr}.tp-info-grid,.tp-related-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:700px){.download-btn{min-height:48px!important;font-size:14px!important}.tool-page-hero{padding-bottom:60px}.tool-page-heading{margin-top:30px}.tool-page-heading h1{font-size:38px}.tool-page-heading p{font-size:16px}.tool-workbench{gap:12px}.tp-upload-inner{min-height:390px;padding:30px 18px}.tp-side{grid-template-columns:1fr}.tp-info-grid,.tp-related-grid{grid-template-columns:1fr}.tp-related-head{align-items:center}.tp-related-head h2{font-size:25px}.tp-related-head .ghost{padding:9px 10px}.tp-stats{grid-template-columns:1fr}.tp-result-actions{flex-direction:column}.tp-result-actions button{width:100%}.result-item,.tp-download{grid-template-columns:auto minmax(0,1fr);align-items:center}.result-item small,.tp-download-size{grid-column:2;margin-top:-4px}.result-item .download-btn,.tp-download .download-btn{grid-column:1/-1;width:100%;margin-left:0}}
 @media(prefers-reduced-motion:reduce){.tool-page,.tp-icon-wrap,.tp-upload-orbit,.tp-upload-icon,.tool-page-bg-a,.tool-page-bg-b,.tp-result,.tp-files-panel{animation:none!important;transition:none!important}}
+
+/* Lato typography tuning: consistent sizing, rhythm, and spacing across the full site */
+body{font-family:"Lato",Arial,sans-serif;font-size:16px;line-height:1.5;letter-spacing:0;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button,input,select,textarea{font-family:"Lato",Arial,sans-serif}
+.brand{font-weight:900;letter-spacing:-.025em}
+.navlinks a,.tools-btn,.ghost,.primary{letter-spacing:-.005em}
+.hero h1{font-family:"Lato",Arial,sans-serif;font-weight:900;line-height:1.02;letter-spacing:-.04em}
+.hero p{line-height:1.55;letter-spacing:-.005em}
+.section-head h2{font-family:"Lato",Arial,sans-serif;font-weight:900;line-height:1.08;letter-spacing:-.035em}
+.section-head p{line-height:1.55}
+.tool-main h3,.feature h3,.workspace-head h3,.modal-top h3{font-weight:900;letter-spacing:-.015em}
+.tool-main p,.feature p,.footer-brand p,.field label,.status,.notice,.toast{line-height:1.5}
+.dropzone strong{font-weight:900;line-height:1.25}
+.file-row,.result-item,.stats .stat{line-height:1.4}
+@media(max-width:700px){.hero h1{line-height:1.04;letter-spacing:-.035em}.hero p{line-height:1.52}.section-head h2{line-height:1.1}}
+
 </style>
 </head>
 <body>
@@ -163,7 +179,7 @@ body.tool-open .tool-page{display:block;animation:toolPageIn .42s ease both}
           <rect x="214" y="88" width="386" height="286" rx="11" fill="#ffffff" stroke="#dfe5ec"/>
           <rect x="214" y="88" width="386" height="34" rx="11" fill="#fbfcfe"/>
           <circle cx="229" cy="105" r="4" fill="#c8cfd7"/><circle cx="242" cy="105" r="4" fill="#c8cfd7"/><circle cx="255" cy="105" r="4" fill="#c8cfd7"/>
-          <text x="273" y="109" fill="#4c5663" font-size="11" font-weight="800" font-family="Google Sans Flex, Arial, sans-serif">PaperPilot</text>
+          <text x="273" y="109" fill="#4c5663" font-size="11" font-weight="800" font-family="Lato, Arial, sans-serif">PaperPilot</text>
           <rect x="227" y="131" width="360" height="30" rx="6" fill="#fafbfd" stroke="#e7ebf0"/>
           <g fill="#77808a">
             <rect x="238" y="141" width="16" height="10" rx="2"/><rect x="262" y="141" width="16" height="10" rx="2"/><rect x="286" y="141" width="16" height="10" rx="2"/>
@@ -175,11 +191,11 @@ body.tool-open .tool-page{display:block;animation:toolPageIn .42s ease both}
           <rect x="274" y="219" width="160" height="5" rx="3" fill="#e9edf1"/><rect x="274" y="243" width="250" height="5" rx="3" fill="#e9edf1"/>
           <rect x="274" y="255" width="218" height="5" rx="3" fill="#e9edf1"/><rect x="274" y="267" width="198" height="5" rx="3" fill="#e9edf1"/>
           <rect x="274" y="279" width="248" height="5" rx="3" fill="#e9edf1"/><rect x="274" y="291" width="184" height="5" rx="3" fill="#e9edf1"/>
-          <rect x="274" y="315" width="74" height="22" rx="4" fill="#e8f1ff"/><text x="311" y="330" text-anchor="middle" fill="#1473e6" font-size="10" font-weight="800" font-family="Google Sans Flex, Arial, sans-serif">Editable</text>
+          <rect x="274" y="315" width="74" height="22" rx="4" fill="#e8f1ff"/><text x="311" y="330" text-anchor="middle" fill="#1473e6" font-size="10" font-weight="800" font-family="Lato, Arial, sans-serif">Editable</text>
           <!-- selected text box -->
           <rect x="409" y="232" width="77" height="35" rx="3" fill="#f4f8ff" stroke="#3f8cff" stroke-width="1.5"/>
           <circle cx="409" cy="232" r="3" fill="#3f8cff"/><circle cx="486" cy="232" r="3" fill="#3f8cff"/><circle cx="409" cy="267" r="3" fill="#3f8cff"/><circle cx="486" cy="267" r="3" fill="#3f8cff"/>
-          <text x="447" y="254" text-anchor="middle" fill="#2b4a70" font-size="12" font-weight="700" font-family="Google Sans Flex, Arial, sans-serif">Hello!</text>
+          <text x="447" y="254" text-anchor="middle" fill="#2b4a70" font-size="12" font-weight="700" font-family="Lato, Arial, sans-serif">Hello!</text>
           <!-- selected circle -->
           <circle cx="492" cy="292" r="26" fill="#d6e4ff" stroke="#6f9dff" stroke-width="2"/>
           <circle cx="492" cy="266" r="3" fill="#6f9dff"/><circle cx="492" cy="318" r="3" fill="#6f9dff"/>
@@ -192,7 +208,7 @@ body.tool-open .tool-page{display:block;animation:toolPageIn .42s ease both}
           <g transform="translate(270 30)"><rect width="48" height="48" rx="10" fill="#7e69ff"/><path d="M14 13h17v20H14zM20 18h17v18H20z" fill="none" stroke="#fff" stroke-width="2"/><path d="M25 24h7M28.5 20.5v7" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
           <g transform="translate(82 262)"><rect width="56" height="56" rx="10" fill="#d94ce6"/><path d="M16 17h24v14H16z" fill="none" stroke="#fff" stroke-width="2"/><path d="M20 24h16M22 34h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M25 17l4 8 4-8" fill="none" stroke="#fff" stroke-width="2"/></g>
           <g transform="translate(590 235)"><rect width="52" height="52" rx="10" fill="#ffb000"/><rect x="12" y="12" width="28" height="28" rx="3" fill="none" stroke="#fff" stroke-width="2"/><circle cx="20" cy="20" r="3" fill="#fff"/><path d="M15 35l8-8 5 5 5-7 7 10" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
-          <g transform="translate(626 128)"><rect width="52" height="52" rx="10" fill="#1682d9"/><text x="26" y="35" text-anchor="middle" fill="#fff" font-size="27" font-weight="900" font-family="Google Sans Flex, Arial, sans-serif">W</text></g>
+          <g transform="translate(626 128)"><rect width="52" height="52" rx="10" fill="#1682d9"/><text x="26" y="35" text-anchor="middle" fill="#fff" font-size="27" font-weight="900" font-family="Lato, Arial, sans-serif">W</text></g>
           <g transform="translate(564 348)"><rect width="52" height="52" rx="10" fill="#ef4444"/><path d="M15 16h22v20H15z" fill="none" stroke="#fff" stroke-width="2"/><path d="M20 22h12M20 27h8M20 32h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
         </g>
         <!-- decorative symbols -->
@@ -400,7 +416,7 @@ function selectedRotations(){const r={};document.querySelectorAll('#organizerPag
 function bytes(n){if(!n&&n!==0)return'—';const u=['B','KB','MB','GB'];let i=0,v=n;while(v>=1024&&i<3){v/=1024;i++}return `${v.toFixed(v>=100?0:v>=10?1:2)} ${u[i]}`}
 function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
 function iconWrap(inner){return `<svg viewBox="0 0 32 32" fill="none" aria-hidden="true">${inner}</svg>`}
-function docIcon(label, stroke='#ef4444', extra=''){return iconWrap(`<path d="M7 4.5h11l7 7v16H7z" fill="white"/><path d="M18 4.5v7h7" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>${extra}<text x="15.8" y="22.3" text-anchor="middle" font-size="7.2" font-weight="900" font-family="Google Sans Flex, Arial, sans-serif" fill="${stroke}">${label}</text>`)}
+function docIcon(label, stroke='#ef4444', extra=''){return iconWrap(`<path d="M7 4.5h11l7 7v16H7z" fill="white"/><path d="M18 4.5v7h7" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>${extra}<text x="15.8" y="22.3" text-anchor="middle" font-size="7.2" font-weight="900" font-family="Lato, Arial, sans-serif" fill="${stroke}">${label}</text>`)}
 function imageIcon(stroke='#ffb000', detail='image'){const body=`<rect x="4.7" y="5" width="22.6" height="22" rx="2.7" fill="white"/><circle cx="11" cy="11" r="2" fill="${stroke}"/><path d="M7.5 23l5.2-5.7 4.1 3.1 3.2-3.3 4.5 5.9" stroke="${stroke}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>`;const badge=detail==='toPdf'?`<path d="M22 11l4 4-4 4" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 15h9" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round"/>`:detail==='compress'?`<path d="M6 7V5.2h1.8M26 25v1.8h-1.8" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round"/><path d="M20.3 12.6l3 3-3 3M23.3 15.6h-5" stroke="${stroke}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>`:detail==='resize'?`<path d="M8 12V7h5M24 20v5h-5M20 8h5v5M12 24H7v-5" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`:'';return iconWrap(body+badge)}
 function toolIconSvg(id){
 const C={pdf:'#ef4444',img:'#ffb000',org:'#8a6bff',sec:'#db335a',edit:'#0c8f9d',ai:'#908bff',blue:'#1473e6',word:'#1682d9',excel:'#169c39',ppt:'#ff7a00'};
@@ -437,11 +453,11 @@ const map={
 'compress-image':()=>imageIcon(C.img,'compress'),'image-converter':()=>imageIcon(C.img,'convert'),'resize-image':()=>imageIcon(C.img,'resize'), 'images-to-pdf':()=>imageIcon(C.img,'toPdf'),
 'pdf-scanner':()=>iconWrap(`<rect x="5" y="6" width="22" height="20" rx="2.5" fill="white"/><path d="M8.5 10h15M8.5 14h10M8.5 18h13" stroke="#8f8bff" stroke-width="1.65" stroke-linecap="round"/><path d="M5 9V6h3M27 23v3h-3" stroke="#8f8bff" stroke-width="1.8" stroke-linecap="round"/>`),
 'pdf-to-webp':()=>docIcon('WEBP',C.img), 'pdf-thumbnails':()=>iconWrap(`<rect x="5" y="5" width="9.5" height="9.5" rx="1.4" fill="white"/><rect x="17.5" y="5" width="9.5" height="9.5" rx="1.4" fill="white" opacity=".92"/><rect x="5" y="17.5" width="9.5" height="9.5" rx="1.4" fill="white" opacity=".9"/><rect x="17.5" y="17.5" width="9.5" height="9.5" rx="1.4" fill="white" opacity=".86"/><path d="M7.5 12l2-2 2.5 2.5" stroke="${C.org}" stroke-width="1.25" stroke-linecap="round"/>`),
-'ai-pdf-assistant':()=>iconWrap(`<rect x="5" y="5" width="22" height="22" rx="4" fill="white"/><text x="16" y="19.5" text-anchor="middle" font-size="10" font-weight="900" font-family="Google Sans Flex, Arial, sans-serif" fill="${C.ai}">AI</text><path d="M8 9h4M20 9h4M8 23h4M20 23h4" stroke="${C.ai}" stroke-width="1.5" stroke-linecap="round"/>`),
+'ai-pdf-assistant':()=>iconWrap(`<rect x="5" y="5" width="22" height="22" rx="4" fill="white"/><text x="16" y="19.5" text-anchor="middle" font-size="10" font-weight="900" font-family="Lato, Arial, sans-serif" fill="${C.ai}">AI</text><path d="M8 9h4M20 9h4M8 23h4M20 23h4" stroke="${C.ai}" stroke-width="1.5" stroke-linecap="round"/>`),
 'chat-with-pdf':()=>iconWrap(`<rect x="5" y="6" width="22" height="19" rx="3" fill="white"/><path d="M9 11h14M9 15h10M9 19h7" stroke="${C.ai}" stroke-width="1.7" stroke-linecap="round"/><path d="M11 25v2l3-2" fill="white" stroke="${C.ai}" stroke-width="1.4" stroke-linejoin="round"/>`),
 'ai-pdf-summarizer':()=>iconWrap(`<rect x="6" y="5" width="20" height="22" rx="2.5" fill="white"/><path d="M10 11h12M10 15h12M10 19h8" stroke="${C.ai}" stroke-width="1.7" stroke-linecap="round"/><path d="M22 22l2 2M24 22l-2 2" stroke="${C.ai}" stroke-width="1.5" stroke-linecap="round"/>`),
 'ai-question-generator':()=>iconWrap(`<rect x="6" y="5" width="20" height="22" rx="2.5" fill="white"/><circle cx="16" cy="14" r="4" stroke="${C.ai}" stroke-width="1.7"/><path d="M14.7 15.5c.5.5 1.1.8 1.8.8 1.1 0 1.8-.6 1.8-1.5 0-1.4-2.7-1.2-2.7-2.8 0-.8.6-1.4 1.5-1.4" stroke="${C.ai}" stroke-width="1.4" stroke-linecap="round"/><path d="M12 22h8" stroke="${C.ai}" stroke-width="1.5" stroke-linecap="round"/>`),
-'translate-pdf':()=>iconWrap(`<rect x="5" y="5" width="22" height="22" rx="3" fill="white"/><text x="11.3" y="17.5" text-anchor="middle" font-size="8.5" font-weight="900" font-family="Google Sans Flex, Arial, sans-serif" fill="${C.ai}">A</text><text x="20.6" y="17.5" text-anchor="middle" font-size="8.5" font-weight="900" font-family="Google Sans Flex, Arial, sans-serif" fill="${C.ai}">文</text><path d="M15.5 12.5h1.5M15.5 21h1.5" stroke="${C.ai}" stroke-width="1.4" stroke-linecap="round"/>`),
+'translate-pdf':()=>iconWrap(`<rect x="5" y="5" width="22" height="22" rx="3" fill="white"/><text x="11.3" y="17.5" text-anchor="middle" font-size="8.5" font-weight="900" font-family="Lato, Arial, sans-serif" fill="${C.ai}">A</text><text x="20.6" y="17.5" text-anchor="middle" font-size="8.5" font-weight="900" font-family="Lato, Arial, sans-serif" fill="${C.ai}">文</text><path d="M15.5 12.5h1.5M15.5 21h1.5" stroke="${C.ai}" stroke-width="1.4" stroke-linecap="round"/>`),
 'pdf-to-pdfa':()=>docIcon('PDF/A',C.pdf,`<path d="M20.5 18h3" stroke="${C.pdf}" stroke-width="1.5" stroke-linecap="round"/>`),
 'job-history':()=>iconWrap(`<circle cx="16" cy="16" r="10" stroke="white" stroke-width="2"/><path d="M16 10v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 7l-2 1.5L7 11" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`),
 };
@@ -490,7 +506,128 @@ function updateOrderInput(){const vals=[...$('organizerPages').children].map(x=>
 function collectOptions(){let o={};document.querySelectorAll('#options input,#options select,#options textarea').forEach(el=>{if(!el.id)return;let v=el.value;if(el.id==='pages')o.pages=parsePages(v);else if(el.id==='orderText')o.order=parsePages(v);else if(el.id==='rect_json'){try{o.rects=JSON.parse(v||'[]')}catch(e){o.rects=[]}}else if(el.id==='edit_page'||el.id==='edit_x'||el.id==='edit_y'){o[el.id]=Number(v||0)}else if(['quality','width','height','dpi','margin','angle','opacity','start_number','count','contrast','compression_level'].includes(el.id))o[el.id]=v===''?undefined:Number(v);else o[el.id]=v});if(['compress-pdf','compress-image'].includes(selectedTool?.id)){const preset=document.querySelector('#options input[name="compression_preset"]:checked')?.value;o.compression_level=preset&&preset!=='custom'?Number(preset):Number(o.compression_level||50)}if(selectedTool?.id==='organize-pdf'){o.order=[...$('organizerPages').children].map(x=>Number(x.dataset.page));o.rotations=selectedRotations()}if(['edit-pdf','pdf-annotator'].includes(selectedTool?.id)){o.notes=[{page:o.edit_page||1,type:o.edit_type||'text',x:o.edit_x||60,y:o.edit_y||60,text:o.edit_text||'Annotation'}];delete o.edit_page;delete o.edit_type;delete o.edit_x;delete o.edit_y;delete o.edit_text}return o}
 function parsePages(v){return (v||'').split(',').flatMap(t=>{t=t.trim();if(!t)return[];if(t.includes('-')){let [a,b]=t.split('-').map(Number);let r=[];for(let i=a;i<=b;i++)r.push(i);return r}return [Number(t)]}).filter(n=>Number.isInteger(n)&&n>0)}
 function showNotice(msg,type='info'){$('notice').className=`notice show ${type}`;$('notice').textContent=msg}
-async function runJob(){if(!selectedTool)return;if(!selectedFiles.length){showNotice('Add at least one file first.','error');return}if(selectedTool.id==='organize-pdf'&&organizerPages.length)updateOrderInput();$('runBtn').disabled=true;$('runBtn').textContent='Starting…';$('progress').classList.add('show');$('resultBox').classList.remove('show');$('progressFill').style.width='2%';$('progressPct').textContent='2%';$('progressStage').textContent='Uploading';const form=new FormData();form.append('tool_id',selectedTool.id);selectedFiles.forEach(f=>form.append('files',f,f.name));form.append('options',JSON.stringify(collectOptions()));try{const res=await fetch(API+'/api/jobs',{method:'POST',body:form});const data=await res.json();if(!res.ok)throw new Error(data.detail||'Could not start job');currentJob=data.job_id;pollTimer=setInterval(pollJob,350)}catch(err){showNotice(err.message,'error');$('runBtn').disabled=false;$('runBtn').textContent='Process files';$('progress').classList.remove('show')}}
+const COMPRESSION_DIRECT_LIMIT=4*1024*1024;
+const COMPRESSION_MAX_FILE=100*1024*1024;
+
+function setCompressionProgress(ui,pct,stage,status=''){
+  const prefix=ui==='legacy'?'':'tp';
+  const ids=ui==='legacy'
+    ?['progressFill','progressPct','progressStage','progressStatus']
+    :['tpProgressFill','tpProgressPct','tpProgressStage','tpProgressStatus'];
+  $(ids[0]).style.width=Math.max(0,Math.min(100,pct))+'%';
+  $(ids[1]).textContent=Math.round(pct)+'%';
+  $(ids[2]).textContent=stage;
+  $(ids[3]).textContent=status||stage;
+}
+
+async function uploadToVercelBlob(file, onProgress){
+  if(file.size>COMPRESSION_MAX_FILE) throw new Error(`${file.name} is larger than the 100 MB compression limit.`);
+  const metaRes=await fetch(API+'/api/blob-upload-url',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      filename:file.name,
+      contentType:file.type||'application/octet-stream',
+      size:file.size
+    })
+  });
+  let meta={};
+  try{meta=await metaRes.json()}catch{}
+  if(!metaRes.ok) throw new Error(meta.detail||meta.error||'Could not prepare the large-file upload.');
+
+  await new Promise((resolve,reject)=>{
+    const xhr=new XMLHttpRequest();
+    xhr.open('PUT',meta.url,true);
+    xhr.setRequestHeader('Content-Type',file.type||'application/octet-stream');
+    xhr.upload.onprogress=e=>{
+      if(e.lengthComputable&&onProgress) onProgress((e.loaded/e.total)*100);
+    };
+    xhr.onerror=()=>reject(new Error('Large-file upload failed. Check your network connection and try again.'));
+    xhr.onabort=()=>reject(new Error('Large-file upload was cancelled.'));
+    xhr.onload=()=>{
+      if(xhr.status>=200&&xhr.status<300) resolve();
+      else reject(new Error(`Large-file upload failed (${xhr.status}).`));
+    };
+    xhr.send(file);
+  });
+  return {pathname:meta.pathname,name:file.name,size:file.size,content_type:file.type||'application/octet-stream'};
+}
+
+async function runBlobCompression(files, toolId, options, ui){
+  if(!files.length) throw new Error('Add at least one file first.');
+  if(files.some(f=>f.size>COMPRESSION_MAX_FILE))
+    throw new Error('Compression supports files up to 100 MB each.');
+  if(typeof XMLHttpRequest==='undefined')
+    throw new Error('This browser does not support large-file uploads.');
+
+  const uploaded=[];
+  for(let i=0;i<files.length;i++){
+    const f=files[i];
+    const basePct=(i/files.length)*45;
+    setCompressionProgress(ui,basePct,'Uploading',`${f.name} · 0%`);
+    uploaded.push(await uploadToVercelBlob(f,p=>{
+      setCompressionProgress(ui,basePct+(p/files.length)*45,'Uploading',`${f.name} · ${Math.round(p)}%`);
+    }));
+  }
+
+  setCompressionProgress(ui,55,'Starting compression','Secure upload complete');
+  const res=await fetch(API+'/api/compress-from-blob',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      tool_id:toolId,
+      files:uploaded,
+      compression_level:Number(options.compression_level??50),
+      quality:options.quality!=null?Number(options.quality):75,
+      width:options.width!=null?Number(options.width):null,
+      height:options.height!=null?Number(options.height):null
+    })
+  });
+  let data={};
+  try{data=await res.json()}catch{}
+  if(!res.ok) throw new Error(data.detail||data.error||'Compression failed.');
+  setCompressionProgress(ui,100,'Complete','Your compressed file is ready.');
+  if(ui==='legacy') showResults(data); else toolPage.showResult(data);
+}
+
+async function runDirectCompression(files, toolId, options, ui){
+  if(!files.length) throw new Error('Add at least one file first.');
+  if(files.some(f=>f.size>COMPRESSION_MAX_FILE))
+    throw new Error('Compression supports files up to 100 MB each.');
+
+  // Vercel Functions have a 4.5 MB request-body limit. Keep a safer 4 MB
+  // application threshold; larger batches go directly to Blob instead.
+  const totalBytes=files.reduce((sum,f)=>sum+f.size,0);
+  if(totalBytes>COMPRESSION_DIRECT_LIMIT || files.some(f=>f.size>COMPRESSION_DIRECT_LIMIT)){
+    return runBlobCompression(files,toolId,options,ui);
+  }
+
+  const form=new FormData();
+  form.append('tool_id',toolId);
+  files.forEach(f=>form.append('files',f,f.name));
+  form.append('compression_level',String(options.compression_level ?? 50));
+  if(options.quality!=null) form.append('quality',String(options.quality));
+  if(options.width!=null) form.append('width',String(options.width));
+  if(options.height!=null) form.append('height',String(options.height));
+  const res=await fetch(API+'/api/compress',{method:'POST',body:form});
+  if(!res.ok){
+    let msg='Compression failed.';
+    try{const d=await res.json();msg=d.detail||msg}catch{}
+    throw new Error(msg);
+  }
+  const blob=await res.blob();
+  const url=URL.createObjectURL(blob);
+  const original=Number(res.headers.get('X-PaperPilot-Original-Bytes')||0);
+  const total=Number(res.headers.get('X-PaperPilot-Output-Bytes')||blob.size);
+  const saved=res.headers.get('X-PaperPilot-Savings');
+  const cd=res.headers.get('Content-Disposition')||'';
+  const match=cd.match(/filename[^;=]*=((?:"[^"]*")|[^;]*)/i);
+  const filename=match?match[1].replace(/^"|"$/g,''):(toolId==='compress-pdf'?'compressed.pdf':'compressed-images.zip');
+  const data={status:'completed',files:[{name:filename,size:total,url}],original_bytes:original,total_output_bytes:total,compression_savings_percent:saved!=null?Number(saved):null,message:'Your compressed file is ready.'};
+  if(ui==='legacy') showResults(data); else toolPage.showResult(data);
+}
+
+async function runJob(){if(!selectedTool)return;if(!selectedFiles.length){showNotice('Add at least one file first.','error');return}if(selectedTool.id==='organize-pdf'&&organizerPages.length)updateOrderInput();$('runBtn').disabled=true;$('runBtn').textContent='Compressing…';$('progress').classList.add('show');$('resultBox').classList.remove('show');$('progressFill').style.width='12%';$('progressPct').textContent='12%';$('progressStage').textContent='Compressing';try{const options=collectOptions();if(['compress-pdf','compress-image'].includes(selectedTool.id)){await runDirectCompression(selectedFiles,selectedTool.id,options,'legacy');$('progressFill').style.width='100%';$('progressPct').textContent='100%';$('progressStage').textContent='Complete';$('runBtn').disabled=false;$('runBtn').textContent='Process again';toast('Compression completed');return;}$('runBtn').textContent='Starting…';$('progressFill').style.width='2%';$('progressPct').textContent='2%';$('progressStage').textContent='Uploading';const form=new FormData();form.append('tool_id',selectedTool.id);selectedFiles.forEach(f=>form.append('files',f,f.name));form.append('options',JSON.stringify(options));const res=await fetch(API+'/api/jobs',{method:'POST',body:form});const data=await res.json();if(!res.ok)throw new Error(data.detail||'Could not start job');currentJob=data.job_id;pollTimer=setInterval(pollJob,350)}catch(err){showNotice(err.message,'error');$('runBtn').disabled=false;$('runBtn').textContent='Process files';$('progress').classList.remove('show')}}
 async function pollJob(){if(!currentJob)return;try{const res=await fetch(API+'/api/jobs/'+currentJob);const data=await res.json();if(!res.ok)throw new Error(data.detail||'Job not found');let pct=Number(data.progress||0);$('progressFill').style.width=pct+'%';$('progressPct').textContent=pct+'%';$('progressStage').textContent=data.stage||data.status;$('progressStatus').textContent=data.error||data.stage||'';if(data.status==='completed'){clearInterval(pollTimer);showResults(data);$('runBtn').disabled=false;$('runBtn').textContent='Process again';toast('Job completed');}else if(data.status==='error'){clearInterval(pollTimer);showNotice(data.error||'Processing failed.','error');$('runBtn').disabled=false;$('runBtn').textContent='Try again';toast('Job failed')}}catch(err){clearInterval(pollTimer);showNotice(err.message,'error');$('runBtn').disabled=false;$('runBtn').textContent='Try again'}}
 function showResults(data){$('resultBox').classList.add('show');const original=data.original_bytes||0,total=data.total_output_bytes||0,saved=data.compression_savings_percent;const stats=[];stats.push(`<div class="stat"><b>${bytes(original)}</b><span>Original</span></div>`);stats.push(`<div class="stat"><b>${bytes(total)}</b><span>Output</span></div>`);stats.push(`<div class="stat"><b>${saved!=null?saved+'%':'—'}</b><span>${saved!=null?'Smaller':'Savings'}</span></div>`);$('stats').innerHTML=stats.join('');$('resultList').innerHTML=(data.files||[]).map(f=>`<div class="result-item"><span>📎</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.name}</span><small>${bytes(f.size)}</small><a class="download-btn" href="${f.url}" download aria-label="Download ${f.name}"><span aria-hidden="true">↓</span> Download</a></div>`).join('')||'<div class="result-item">No downloadable files were produced.</div>'}
 function bindUpload(){const dz=$('dropzone'),inp=$('fileInput');$('pickBtn').onclick=()=>inp.click();inp.onchange=()=>addFiles([...inp.files]);['dragenter','dragover'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',ev=>addFiles([...ev.dataTransfer.files]));}
@@ -588,13 +725,18 @@ const toolPage = {
   async run(){
     if(!selectedTool)return;
     if(!tpFiles.length){showTpNotice('Choose at least one file first.');return}
-    $('tpRunBtn').disabled=true;$('tpRunBtn').textContent='Starting…';
-    $('tpProgress').classList.add('show');$('tpProgressFill').style.width='4%';$('tpProgressPct').textContent='4%';$('tpProgressStage').textContent='Uploading';
-    const form=new FormData();form.append('tool_id',selectedTool.id);tpFiles.forEach(f=>form.append('files',f,f.name));form.append('options',JSON.stringify(this.collectOptions()));
+    $('tpRunBtn').disabled=true;$('tpRunBtn').textContent='Compressing…';
+    $('tpProgress').classList.add('show');$('tpProgressFill').style.width='12%';$('tpProgressPct').textContent='12%';$('tpProgressStage').textContent='Compressing';
     try{
-      const res=await fetch(API+'/api/jobs',{method:'POST',body:form});const data=await res.json();if(!res.ok)throw new Error(data.detail||'Could not start the job');
-      tpJob=data.job_id;tpPoll=setInterval(()=>this.poll(),320);
-    }catch(err){showTpNotice(err.message);$('tpRunBtn').disabled=false;$('tpRunBtn').textContent='Process files';}
+      const options=this.collectOptions();
+      if(['compress-pdf','compress-image'].includes(selectedTool.id)){
+        await runDirectCompression(tpFiles,selectedTool.id,options,'toolpage');
+        $('tpProgressFill').style.width='100%';$('tpProgressPct').textContent='100%';$('tpProgressStage').textContent='Complete';$('tpRunBtn').disabled=false;$('tpRunBtn').textContent='Process again';toast('Compression completed');return;
+      }
+      $('tpRunBtn').textContent='Starting…';$('tpProgressFill').style.width='4%';$('tpProgressPct').textContent='4%';$('tpProgressStage').textContent='Uploading';
+      const form=new FormData();form.append('tool_id',selectedTool.id);tpFiles.forEach(f=>form.append('files',f,f.name));form.append('options',JSON.stringify(options));
+      const res=await fetch(API+'/api/jobs',{method:'POST',body:form});const data=await res.json();if(!res.ok)throw new Error(data.detail||'Could not start the job');tpJob=data.job_id;tpPoll=setInterval(()=>this.poll(),320);
+    }catch(err){showTpNotice(err.message);$('tpRunBtn').disabled=false;$('tpRunBtn').textContent='Process files';$('tpProgress').classList.remove('show');}
   },
   async poll(){
     if(!tpJob)return;
@@ -626,12 +768,12 @@ function acceptLabel(id){if(['compress-image','image-converter','resize-image','
 function titleFor(t){if(t.id==='compress-pdf')return'Compress PDF for free';if(t.id==='word-to-pdf')return'Word to PDF converter';if(t.id==='excel-to-pdf')return'Excel to PDF converter';if(t.id==='jpg-to-pdf')return'JPG to PDF converter';if(t.id==='pdf-to-jpg')return'PDF to JPG converter';if(t.id==='pdf-to-png')return'PDF to PNG converter';if(t.id==='merge-pdf')return'Merge PDF files';if(t.id==='split-pdf')return'Split PDF files';if(t.id==='pdf-ocr')return'PDF OCR online';return t.n}
 function leadFor(t){return `${t.d} Fast, focused and designed to keep the controls you need right where you expect them.`}
 function dropTitleFor(t){if(t.id==='merge-pdf')return'Drop PDFs to merge';if(t.id==='images-to-pdf'||t.id==='jpg-to-pdf')return'Drop images to convert';if(t.id==='word-to-pdf'||t.id==='excel-to-pdf'||t.id==='ppt-to-pdf')return'Drop your document here';if(t.id.startsWith('pdf')||t.id.includes('pdf'))return'Drop your PDF here';return'Drop your files here'}
-function noteFor(t){if(t.c==='AI')return'Your document is processed by the configured PaperPilot AI/document workflow.';if(t.c==='Security')return'Use only files and passwords you are authorized to process.';return'Large files are validated before the job starts, with clear output and error states.'}
+function noteFor(t){if(t.c==='AI')return'Your document is processed by the configured PaperPilot AI/document workflow.';if(t.c==='Security')return'Use only files and passwords you are authorized to process.';return'Compression accepts files up to 100 MB each. Larger compression files upload directly to secure Vercel Blob storage.'}
 function setPageOptions(tool){
   let h='';
   const field=(label,id,html,full=false)=>`<div class="tp-field ${full?'full':''}"><label for="tp-${id}">${label}</label>${html.replaceAll(' id="',' id="tp-')}</div>`;
   const input=(id,type='text',placeholder='',value='')=>`<input id="${id}" type="${type}" placeholder="${placeholder}" value="${value}">`;
-  if(['compress-pdf','compress-image'].includes(tool))h+=field('Compression level','compression_level',`<div class="compression-panel"><div class="compression-choices"><label class="compression-choice"><input type="radio" name="tp-compression-preset" value="25"><span><b>Low compression</b><small>Best quality</small></span></label><label class="compression-choice"><input type="radio" name="tp-compression-preset" value="50" checked><span><b>Medium compression</b><small>Balanced</small></span></label><label class="compression-choice"><input type="radio" name="tp-compression-preset" value="75"><span><b>High compression</b><small>Smallest practical output</small></span></label><label class="compression-choice"><input type="radio" name="tp-compression-preset" value="custom"><span><b>Custom</b><small>Choose percentage</small></span></label></div><div class="compression-custom"><div class="compression-custom-head"><span>Custom compression</span><b id="tp-compressionValue">50%</b></div><input id="compression_level" type="range" min="10" max="90" value="50" style="width:100%"><small class="compression-help">Higher % = more compression. Exact savings vary by file.</small></div></div>`,true);
+  if(['compress-pdf','compress-image'].includes(tool))h+=field('Compression level','compression_level',`<div class="compression-panel"><div class="compression-choices"><label class="compression-choice"><input type="radio" name="tp-compression-preset" value="25"><span><b>Low compression</b><small>Best quality</small></span></label><label class="compression-choice"><input type="radio" name="tp-compression-preset" value="50" checked><span><b>Medium compression</b><small>Balanced</small></span></label><label class="compression-choice"><input type="radio" name="tp-compression-preset" value="75"><span><b>High compression</b><small>Smallest practical output</small></span></label><label class="compression-choice"><input type="radio" name="tp-compression-preset" value="custom"><span><b>Custom</b><small>Choose percentage</small></span></label></div><div class="compression-custom"><div class="compression-custom-head"><span>Custom compression</span><b id="compressionValue">50%</b></div><input id="compression_level" type="range" min="10" max="90" value="50" style="width:100%"><small class="compression-help">Higher % = more compression. Exact savings vary by file.</small></div></div>`,true);
   if(['image-converter','resize-image'].includes(tool))h+=field('Quality','quality',`<div><div class="tp-range-label"><span>JPEG / WebP quality</span><b class="tp-range-value" id="tp-qVal">80</b></div><input id="quality" type="range" min="10" max="100" value="80" style="width:100%"></div>`,true);
   if(['compress-image','resize-image'].includes(tool)){h+=field('Target width','width',input('width','number','e.g. 2400'));h+=field('Target height','height',input('height','number','e.g. 1600'))}
   if(tool==='resize-image')h+=field('Fit mode','fit',`<select id="fit"><option value="contain">Contain</option><option value="cover">Cover</option><option value="exact">Exact</option></select>`);
@@ -654,7 +796,7 @@ function setPageOptions(tool){
   if(tool==='pdf-scanner')h+=field('Grayscale','grayscale',`<select id="grayscale"><option>true</option><option>false</option></select>`);
   if(!h)h=`<div class="tp-field full"><label>Ready</label><div style="padding:11px;border:1px solid var(--line2);border-radius:8px;background:var(--soft);color:#6f7882;font-size:12px;line-height:1.5">This tool is ready to run with the uploaded files. Tool-specific options appear here when available.</div></div>`;
   $('tpOptions').innerHTML=h;
-  if(document.querySelector('#tpOptions input[name=\"tp-compression-preset\"]')){const rng=$('tp-compression_level'),val=$('tp-compressionValue');const sync=()=>{const custom=document.querySelector('#tpOptions input[name=\"tp-compression-preset\"]:checked')?.value==='custom';rng.parentElement.style.opacity=custom?'1':'.5';rng.parentElement.style.pointerEvents=custom?'auto':'none';val.textContent=rng.value+'%'};document.querySelectorAll('#tpOptions input[name=\"tp-compression-preset\"]').forEach(r=>r.onchange=()=>{if(r.value!=='custom'){rng.value=r.value;val.textContent=r.value+'%'}sync()});rng.oninput=sync;sync()}
+  if(document.querySelector('#tpOptions input[name=\"tp-compression-preset\"]')){const rng=$('tp-compression_level'),val=$('tp-compressionValue'),wrap=rng?.parentElement;if(!rng||!val||!wrap)return;const sync=()=>{const custom=document.querySelector('#tpOptions input[name=\"tp-compression-preset\"]:checked')?.value==='custom';wrap.style.opacity=custom?'1':'.5';wrap.style.pointerEvents=custom?'auto':'none';val.textContent=rng.value+'%'};document.querySelectorAll('#tpOptions input[name=\"tp-compression-preset\"]').forEach(r=>r.onchange=()=>{if(r.value!=='custom'){rng.value=r.value;val.textContent=r.value+'%'}sync()});rng.oninput=sync;sync()}
   if($('tp-quality'))$('tp-quality').oninput=()=>$('tp-qVal').textContent=$('tp-quality').value;
 }
 function renderRelated(id){

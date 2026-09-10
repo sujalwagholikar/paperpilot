@@ -2,13 +2,17 @@
 
 A single reusable module powering the FastAPI layer. The implementation favors
 local processing and has optional integrations for LibreOffice, Ghostscript,
-Tesseract, Pandoc and WeasyPrint when those executables/packages are installed.
+qpdf, Tesseract, Pandoc and WeasyPrint when those executables/packages are
+installed.
 
 Core Python dependencies:
     pip install pillow pypdf pymupdf reportlab python-docx openpyxl python-pptx fastapi uvicorn python-multipart weasyprint
 
 Optional system tools:
-    LibreOffice (office -> PDF), Ghostscript (PDF/A), Tesseract (OCR), Pandoc (EPUB)
+    LibreOffice (office -> PDF), Ghostscript (PDF/A, stronger lossy PDF
+    compression), qpdf (lossless object/cross-reference stream compression —
+    the main lever for text/vector-heavy PDFs with little or no raster image
+    content), Tesseract (OCR), Pandoc (EPUB)
 """
 from __future__ import annotations
 
@@ -348,51 +352,406 @@ def rotate_pdf(input_path: Path, angle: int, pages: Sequence[int] | None, output
     return OutputFile(output_path,"application/pdf")
 
 
-def compress_pdf(input_path: Path, output_path: Path, compression_level: int = 50, callback=None) -> OutputFile:
-    """Compress a PDF using a strength profile from 10..90.
-
-    PDF compression is content-dependent, so the requested percentage is a
-    compression-strength preference rather than a guaranteed exact file-size
-    reduction. We use PyMuPDF's structural cleanup when available and fall
-    back to pypdf stream compression.
-    """
-    strength = max(10, min(90, int(compression_level)))
-    # Map user-facing strength to increasingly aggressive structural cleanup.
-    garbage = 0 if strength < 30 else 2 if strength < 60 else 4
-    if fitz is not None:
-        try:
-            doc = fitz.open(str(input_path))
+def _pdf_page_inventory(input_path: Path) -> dict[str, Any]:
+    """Inspect a PDF and estimate whether image recompression will be useful."""
+    info = {
+        "pages": 0,
+        "image_count": 0,
+        "large_image_count": 0,
+        "text_pages": 0,
+        "image_xrefs": set(),
+    }
+    if fitz is None:
+        return info
+    doc = None
+    try:
+        doc = fitz.open(str(input_path))
+        info["pages"] = doc.page_count
+        for page in doc:
             try:
-                total = doc.page_count
-                for index in range(total):
+                images = page.get_images(full=True)
+                info["image_count"] += len(images)
+                for item in images:
+                    xref = int(item[0])
+                    info["image_xrefs"].add(xref)
                     try:
-                        page = doc.load_page(index)
-                        page.clean_contents()
+                        meta = doc.extract_image(xref)
+                        if int(meta.get("width", 0)) * int(meta.get("height", 0)) >= 1_000_000:
+                            info["large_image_count"] += 1
                     except Exception:
                         pass
-                    if callback and total:
-                        callback(15 + int((index + 1) / total * 70), f"Optimizing page {index + 1} of {total}")
-                doc.save(str(output_path), garbage=garbage, clean=True, deflate=True, use_objstms=(strength >= 60))
-            finally:
-                doc.close()
-            return OutputFile(output_path, "application/pdf")
-        except Exception:
-            try:
-                output_path.unlink(missing_ok=True)
+                if page.get_text("text").strip():
+                    info["text_pages"] += 1
             except Exception:
-                pass
+                continue
+    finally:
+        if doc is not None:
+            doc.close()
+    return info
 
-    reader=_read_pdf(input_path); writer=PdfWriter()
-    total=len(reader.pages)
+
+def _ghostscript_available() -> str | None:
+    return shutil.which("gs") or shutil.which("gswin64c") or shutil.which("gswin32c")
+
+
+def _qpdf_available() -> str | None:
+    return shutil.which("qpdf")
+
+
+def _run_qpdf_structural_compress(input_path: Path, output_path: Path) -> None:
+    """Optional qpdf pass: lossless structural recompression.
+
+    qpdf generates compressed cross-reference/object streams, which pypdf's
+    writer cannot produce. On text/vector-heavy PDFs with little or no raster
+    image content (where image recompression has nothing to work with), this
+    is often the single biggest lossless size reduction available, and it
+    requires no quality trade-off. When qpdf is missing, this simply isn't
+    tried and the pypdf-based structural pass remains the fallback.
+    """
+    qpdf = _qpdf_available()
+    if not qpdf:
+        raise ProcessingError("qpdf is not installed.")
+    args = [
+        qpdf, "--compress-streams=y", "--object-streams=generate",
+        "--recompress-flate", "--compression-level=9",
+        str(input_path), str(output_path),
+    ]
+    proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=180)
+    # qpdf returns 3 for "warnings only" (e.g. minor recoverable structure
+    # issues) and still produces a valid output file in that case.
+    if proc.returncode not in (0, 3) or not output_path.exists() or output_path.stat().st_size <= 0:
+        detail = (proc.stderr or proc.stdout or "unknown qpdf error").strip()
+        raise ProcessingError(f"qpdf compression failed: {detail[-700:]}")
+
+
+def _run_ghostscript_pdf(input_path: Path, output_path: Path, *, dpi: int, jpeg_quality: int,
+                         compatibility: str = "1.4", grayscale: bool = False,
+                         pdfsettings: str | None = None) -> None:
+    """Optional Ghostscript pass for environments where Ghostscript is installed."""
+    gs = _ghostscript_available()
+    if not gs:
+        raise ProcessingError("Ghostscript is not installed.")
+    args = [
+        gs, "-dSAFER", "-dBATCH", "-dNOPAUSE", "-dQUIET", "-sDEVICE=pdfwrite",
+        f"-dCompatibilityLevel={compatibility}", "-dDetectDuplicateImages=true",
+        "-dCompressFonts=true", "-dSubsetFonts=true", "-dOptimize=true",
+        "-dAutoFilterColorImages=false", "-dAutoFilterGrayImages=false",
+        "-dDownsampleColorImages=true", "-dDownsampleGrayImages=true",
+        "-dDownsampleMonoImages=true", "-dColorImageDownsampleType=/Bicubic",
+        "-dGrayImageDownsampleType=/Bicubic", "-dMonoImageDownsampleType=/Subsample",
+        f"-dColorImageResolution={dpi}", f"-dGrayImageResolution={dpi}",
+        f"-dMonoImageResolution={max(150, dpi * 2)}", "-dColorImageFilter=/DCTEncode",
+        "-dGrayImageFilter=/DCTEncode", f"-dJPEGQ={max(20, min(100, int(jpeg_quality)))}",
+    ]
+    if pdfsettings:
+        args.append(f"-dPDFSETTINGS=/{pdfsettings}")
+    if grayscale:
+        args.extend(["-sColorConversionStrategy=Gray", "-dProcessColorModel=/DeviceGray"])
+    args.extend([f"-sOutputFile={output_path}", str(input_path)])
+    proc = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=240)
+    if proc.returncode != 0 or not output_path.exists() or output_path.stat().st_size <= 0:
+        detail = (proc.stderr or proc.stdout or "unknown Ghostscript error").strip()
+        raise ProcessingError(f"PDF compression engine failed: {detail[-700:]}")
+
+
+def _compression_profile(strength: int) -> tuple[int, int, int]:
+    """Return (target_dpi, jpeg_quality, minimum_pixel_edge) for the UI strength."""
+    # Higher strength = lower target resolution and JPEG quality.
+    if strength <= 20:
+        return 180, 84, 900
+    if strength <= 40:
+        return 150, 78, 800
+    if strength <= 60:
+        return 120, 68, 700
+    if strength <= 75:
+        return 100, 58, 560
+    if strength <= 88:
+        return 85, 50, 480
+    return 72, 42, 400
+
+
+def _encode_pdf_embedded_image(image_bytes: bytes, *, target_width: int, target_height: int,
+                               quality: int) -> bytes | None:
+    """Decode and recompress an embedded PDF image without rasterizing the PDF page."""
+    try:
+        image = Image.open(io.BytesIO(image_bytes))
+        image.load()
+        if image.width <= 1 or image.height <= 1:
+            return None
+
+        # Downsample only when the source exceeds our target dimensions. This is
+        # the key difference from stream-only PDF optimization.
+        if target_width and target_height and (image.width > target_width or image.height > target_height):
+            image.thumbnail((target_width, target_height), Image.Resampling.LANCZOS)
+
+        # JPEG cannot carry alpha. Blend transparent images onto white so the
+        # visible page remains intact instead of losing transparent regions.
+        if image.mode in ("RGBA", "LA") or (image.mode == "P" and "transparency" in image.info):
+            rgba = image.convert("RGBA")
+            bg = Image.new("RGB", rgba.size, (255, 255, 255))
+            bg.paste(rgba, mask=rgba.getchannel("A"))
+            image = bg
+        elif image.mode not in ("RGB", "L"):
+            image = image.convert("RGB")
+
+        out = io.BytesIO()
+        image.save(out, format="JPEG", quality=max(30, min(95, quality)), optimize=True, progressive=True)
+        data = out.getvalue()
+        return data if data else None
+    except Exception:
+        return None
+
+
+def _replace_embedded_images(input_path: Path, output_path: Path, *, dpi: int, quality: int,
+                             callback=None) -> tuple[bool, int, int]:
+    """Recompress embedded raster images in-place while preserving PDF vectors/text."""
+    if fitz is None:
+        return False, 0, 0
+
+    doc = fitz.open(str(input_path))
+    changed = 0
+    original_image_bytes = 0
+    new_image_bytes = 0
+    replaced_xrefs: set[int] = set()
+    try:
+        total_pages = max(1, doc.page_count)
+        for page_no, page in enumerate(doc, 1):
+            try:
+                images = page.get_images(full=True)
+            except Exception:
+                images = []
+
+            for item in images:
+                xref = int(item[0])
+                if xref in replaced_xrefs or xref <= 0:
+                    continue
+                try:
+                    meta = doc.extract_image(xref)
+                    raw = meta.get("image", b"")
+                    width = int(meta.get("width", 0))
+                    height = int(meta.get("height", 0))
+                    if not raw or width < 2 or height < 2:
+                        continue
+                    original_image_bytes += len(raw)
+
+                    # Estimate the displayed pixel demand. If the image occurs
+                    # at a known physical size, target the requested DPI there;
+                    # otherwise cap the long edge to avoid huge source scans.
+                    target_w, target_h = width, height
+                    rects = page.get_image_rects(xref)
+                    if rects:
+                        rect = rects[0]
+                        # PDF points → inches; allow a little headroom to keep
+                        # text in scanned pages legible.
+                        physical_w = max(0.1, abs(rect.width) / 72.0)
+                        physical_h = max(0.1, abs(rect.height) / 72.0)
+                        target_w = max(64, int(physical_w * dpi))
+                        target_h = max(64, int(physical_h * dpi))
+                    else:
+                        scale = min(1.0, max(64, dpi * 8) / max(width, height))
+                        target_w = max(64, int(width * scale))
+                        target_h = max(64, int(height * scale))
+
+                    encoded = _encode_pdf_embedded_image(
+                        raw,
+                        target_width=target_w,
+                        target_height=target_h,
+                        quality=quality,
+                    )
+                    if not encoded or len(encoded) >= len(raw) * 0.97:
+                        continue
+
+                    page.replace_image(xref, stream=encoded)
+                    replaced_xrefs.add(xref)
+                    changed += 1
+                    new_image_bytes += len(encoded)
+                except Exception:
+                    continue
+
+            if callback:
+                callback(10 + int(page_no / total_pages * 70), f"Optimizing images on page {page_no} of {total_pages}")
+
+        # garbage=4 removes unreferenced image objects; clean fixes content
+        # streams; deflate compresses remaining non-image streams; object
+        # streams reduce overhead for object-heavy PDFs.
+        doc.save(
+            str(output_path),
+            garbage=4,
+            clean=True,
+            deflate=True,
+            deflate_images=False,
+            deflate_fonts=True,
+            use_objstms=True,
+            compression_effort=9,
+            preserve_metadata=True,
+        )
+    finally:
+        doc.close()
+    return changed > 0, original_image_bytes, new_image_bytes
+
+
+def _pypdf_structural_compress(input_path: Path, output_path: Path, callback=None) -> None:
+    """Safe fallback for PDFs with little/no raster image content."""
+    reader = _read_pdf(input_path)
+    writer = PdfWriter()
+    total = len(reader.pages)
     for index, page in enumerate(reader.pages, 1):
-        try: page.compress_content_streams()
-        except Exception: pass
+        try:
+            page.compress_content_streams()
+        except Exception:
+            pass
         writer.add_page(page)
-        if callback and total: callback(15 + int(index/total*70), f"Optimizing page {index} of {total}")
-    if strength < 70 and reader.metadata:
-        writer.add_metadata({str(k):str(v) for k,v in reader.metadata.items() if v is not None})
-    with output_path.open("wb") as fh: writer.write(fh)
-    return OutputFile(output_path,"application/pdf")
+        if callback and total:
+            callback(20 + int(index / total * 55), f"Optimizing page {index} of {total}")
+    try:
+        writer.compress_identical_objects(remove_identicals=True, remove_orphans=True)
+    except Exception:
+        pass
+    try:
+        writer.metadata = {k: v for k, v in (reader.metadata or {}).items() if v}
+    except Exception:
+        pass
+    with output_path.open("wb") as fh:
+        writer.write(fh)
+
+
+def compress_pdf(input_path: Path, output_path: Path, compression_level: int = 50, callback=None) -> OutputFile:
+    """Powerful adaptive PDF compressor.
+
+    The compressor first recompresses embedded raster images while keeping PDF
+    text/vector content intact. It then performs object/stream garbage
+    collection. When Ghostscript is available, strong modes can optionally use
+    an additional pdfwrite pass and keep whichever result is smaller.
+
+    ``compression_level`` is a strength value (10..90), not a guaranteed exact
+    percentage reduction. Exact savings depend on whether the PDF contains
+    already-compressed images, vector artwork, fonts, or redundant objects.
+    """
+    strength = max(10, min(90, int(compression_level)))
+    original_size = input_path.stat().st_size
+    ensure_dir(output_path.parent)
+    if callback:
+        callback(5, "Analyzing PDF content")
+
+    # First pass: pure Python/PyMuPDF image-aware compression. This is portable
+    # and does not depend on system binaries, making it suitable for serverless.
+    dpi, quality, _ = _compression_profile(strength)
+    candidate_paths: list[Path] = []
+    image_candidate = output_path.parent / f".pp-image-{os.getpid()}.pdf"
+    try:
+        try:
+            changed, before_img, after_img = _replace_embedded_images(
+                input_path, image_candidate, dpi=dpi, quality=quality, callback=callback
+            )
+            # Keep this candidate even when no embedded images were replaced:
+            # the PyMuPDF resave inside _replace_embedded_images still applies
+            # garbage collection, stream deflation, font subsetting and object
+            # streams, which is the main lever available for text/vector-only
+            # PDFs (no raster images to recompress). Discarding it here was
+            # causing near-zero compression on exactly that kind of document.
+            if image_candidate.exists() and image_candidate.stat().st_size > 0:
+                candidate_paths.append(image_candidate)
+        except Exception:
+            image_candidate.unlink(missing_ok=True)
+
+        # Second pass: structural cleanup baseline. Keep this even if no images
+        # were replaceable; vector-heavy PDFs benefit from object deduplication.
+        structural_candidate = output_path.parent / f".pp-struct-{os.getpid()}.pdf"
+        try:
+            _pypdf_structural_compress(input_path, structural_candidate, callback=callback)
+            if structural_candidate.exists() and structural_candidate.stat().st_size > 0:
+                candidate_paths.append(structural_candidate)
+        except Exception:
+            structural_candidate.unlink(missing_ok=True)
+
+        # Optional qpdf pass: compressed object/cross-reference streams that
+        # pypdf's writer cannot produce, and that Ghostscript's pdfwrite also
+        # doesn't guarantee. This is a lossless, binary-only win that matters
+        # most for text/vector-heavy PDFs with few or no raster images —
+        # without it, such files were barely shrinking at all.
+        if _qpdf_available():
+            qpdf_candidate = output_path.parent / f".pp-qpdf-{os.getpid()}.pdf"
+            try:
+                _run_qpdf_structural_compress(input_path, qpdf_candidate)
+                if qpdf_candidate.exists() and qpdf_candidate.stat().st_size > 0:
+                    candidate_paths.append(qpdf_candidate)
+            except Exception:
+                qpdf_candidate.unlink(missing_ok=True)
+
+        # Optional Ghostscript candidate. On a workstation/container it often
+        # gives the strongest result. On Vercel or other serverless runtimes it
+        # simply won't run and the portable path above remains the default.
+        gs = _ghostscript_available()
+        if gs and strength >= 45:
+            gs_profiles = {
+                45: (120, 72, False, "ebook"),
+                60: (100, 62, False, "ebook"),
+                75: (85, 52, False, None),
+                90: (72, 42, True, None),
+            }
+            keys = [k for k in gs_profiles if k <= strength]
+            key = max(keys) if keys else 45
+            gs_dpi, gs_quality, gray, preset = gs_profiles[key]
+            gs_candidate = output_path.parent / f".pp-gs-{os.getpid()}.pdf"
+            try:
+                _run_ghostscript_pdf(
+                    input_path, gs_candidate, dpi=gs_dpi, jpeg_quality=gs_quality,
+                    grayscale=gray and strength >= 75 and _pdf_page_inventory(input_path)["large_image_count"] > 0,
+                    pdfsettings=preset,
+                )
+                if gs_candidate.exists() and gs_candidate.stat().st_size > 0:
+                    candidate_paths.append(gs_candidate)
+            except Exception:
+                gs_candidate.unlink(missing_ok=True)
+
+        valid = [p for p in candidate_paths if p.exists() and p.stat().st_size > 0]
+        if not valid:
+            raise ProcessingError("No valid compressed PDF was produced.")
+
+        # Chain a qpdf structural pass on top of every candidate produced so
+        # far. Image recompression and Ghostscript's pdfwrite both focus on
+        # image/stream content and neither guarantees compressed object or
+        # cross-reference streams, so qpdf can still shrink their output
+        # further, sometimes substantially (heavy object/dictionary reuse).
+        # This never makes things worse: each chained result only replaces
+        # its parent candidate in the pool when it's actually smaller.
+        if _qpdf_available():
+            chained: list[Path] = []
+            for i, base in enumerate(valid):
+                chained_path = output_path.parent / f".pp-qpdf-chain-{i}-{os.getpid()}.pdf"
+                try:
+                    _run_qpdf_structural_compress(base, chained_path)
+                    if (
+                        chained_path.exists()
+                        and chained_path.stat().st_size > 0
+                        and chained_path.stat().st_size < base.stat().st_size
+                    ):
+                        chained.append(chained_path)
+                    else:
+                        chained_path.unlink(missing_ok=True)
+                except Exception:
+                    chained_path.unlink(missing_ok=True)
+            candidate_paths.extend(chained)
+            valid = [p for p in candidate_paths if p.exists() and p.stat().st_size > 0]
+
+        # Never ship an output larger than the input when the user explicitly
+        # asked for compression. If every candidate is larger, use the smallest
+        # valid candidate and make no claim of savings.
+        smaller = [p for p in valid if p.stat().st_size < original_size]
+        best = min(smaller or valid, key=lambda p: p.stat().st_size)
+        shutil.move(str(best), str(output_path))
+
+        for p in candidate_paths:
+            p.unlink(missing_ok=True)
+
+        if callback:
+            out_size = output_path.stat().st_size
+            saved = max(0.0, (1 - out_size / original_size) * 100) if original_size else 0.0
+            callback(98, f"Compression complete — {saved:.1f}% smaller")
+        return OutputFile(output_path, "application/pdf")
+    finally:
+        for p in candidate_paths:
+            p.unlink(missing_ok=True)
 
 
 def pdf_to_images(input_path: Path, output_dir: Path, image_format: str="png", dpi:int=150, pages:Sequence[int]|None=None, callback=None) -> list[OutputFile]:
