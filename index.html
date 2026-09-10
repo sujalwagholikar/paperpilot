@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light only">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
+<title>PaperPilot — PDF, Image & Document Tools</title>
+<style>
+:root{color-scheme:light;--bg:#fff;--surface:#fff;--soft:#f7f8fa;--soft2:#f1f3f5;--line:#d9dde3;--line2:#e9ecf0;--text:#17191c;--muted:#5f6670;--dim:#8b929b;--blue:#1473e6;--blue2:#0b63c9;--blueSoft:#edf5ff;--green:#1f9d61;--shadow:0 18px 50px rgba(24,39,75,.09);--shadow2:0 8px 30px rgba(24,39,75,.08);--radius:10px;--max:1260px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--text);font-family:"Lato",Arial,sans-serif;line-height:1.45;-webkit-font-smoothing:antialiased}.container{width:min(var(--max),calc(100% - 48px));margin:auto}button,input,select,textarea{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+.topbar{position:sticky;top:0;z-index:80;background:rgba(255,255,255,.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--line2)}.nav{height:74px;display:flex;align-items:center;gap:12px}.brand{display:flex;align-items:center;gap:11px;min-width:185px;font-size:19px;font-weight:850;letter-spacing:-.03em}.brandmark{width:34px;height:34px;border-radius:9px;background:conic-gradient(#ffb400 0 25%,#ff5a6f 0 50%,#7e69ff 0 75%,#1bc6ac 0);position:relative;box-shadow:0 6px 16px rgba(60,70,90,.12)}.brandmark:after{content:"";position:absolute;inset:8px;border-radius:4px;background:#fff}.navlinks{display:flex;align-items:center;gap:3px}.navlinks a,.tools-btn{padding:11px 13px;border-radius:8px;color:#24272b;font-weight:650}.navlinks a:hover,.tools-btn:hover{background:var(--soft)}.tools-btn{border:1px solid var(--line);background:#fff;display:flex;gap:9px;align-items:center}.gridicon{display:grid;grid-template-columns:repeat(3,4px);gap:2px}.gridicon i{width:4px;height:4px;border-radius:1px;background:#222;display:block}.navright{margin-left:auto;display:flex;gap:9px;align-items:center}.navright .link{padding:11px 12px;font-weight:650;color:#24272b}.ghost,.primary{border-radius:8px;padding:11px 16px;font-weight:780;border:1px solid var(--line);background:#fff;color:var(--text)}.ghost:hover{background:var(--soft)}.primary{background:var(--blue);border-color:var(--blue);color:#fff}.primary:hover{background:var(--blue2)}.mobile-toggle{display:none;border:0;background:transparent;font-size:23px}.dropdown{position:absolute;top:68px;left:195px;width:420px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:12px;display:none}.dropdown.show{display:grid;grid-template-columns:1fr 1fr}.dropgroup{padding:8px}.dropgroup h4{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:var(--dim);margin:6px 10px}.dropgroup a{display:block;padding:10px;border-radius:7px;font-size:13px;color:#30343a}.dropgroup a:hover{background:var(--soft)}
+.hero{padding:90px 0 90px;min-height:610px;background:#fff}
+.hero-inner{width:min(1520px,calc(100% - 120px));margin:0 auto;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(520px,.98fr);gap:54px;align-items:center}.eyebrow{display:inline-flex;gap:8px;align-items:center;border:1px solid var(--line);background:var(--soft);padding:7px 11px;border-radius:999px;color:#3b4148;font-weight:730;font-size:12px}.hero h1{margin:18px 0 22px;font-size:clamp(52px,6vw,82px);line-height:.98;letter-spacing:-.055em;font-weight:900;max-width:740px}.hero p{font-size:20px;color:var(--muted);max-width:690px;margin:0 0 32px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.hero-note{display:flex;gap:18px;margin-top:24px;flex-wrap:wrap;color:#6d747d;font-size:13px}.hero-note span{display:flex;gap:7px;align-items:center}.hero-visual{position:relative;min-height:420px}.paper{position:absolute;inset:36px 18px 8px 25px;background:#f5f7fb;transform:rotate(-6deg);border-radius:16px;box-shadow:0 34px 65px rgba(25,45,80,.12)}.paper2{position:absolute;inset:78px 18px 32px 92px;background:#fff;transform:rotate(4deg);border-radius:16px;border:1px solid #dde2e8;box-shadow:0 28px 55px rgba(25,45,80,.13)}.mock-app{position:absolute;inset:98px 55px 58px 105px;background:#fff;border:1px solid #dfe4e9;border-radius:12px;box-shadow:0 20px 44px rgba(25,45,80,.12);padding:18px}.mock-top{height:24px;display:flex;gap:7px;align-items:center;border-bottom:1px solid #e9edf1}.mock-dot{width:7px;height:7px;border-radius:50%;background:#c9ced4}.mock-body{display:grid;grid-template-columns:72px 1fr;gap:14px;padding-top:14px}.mock-side{display:grid;gap:8px}.mock-side div{height:22px;border-radius:5px;background:#eef1f5}.mock-side div:first-child{background:#e3efff}.mock-page{border:1px solid #e0e4ea;border-radius:8px;padding:15px}.mock-toolbar{display:flex;gap:6px;margin-bottom:13px}.mock-toolbar i{width:22px;height:22px;border-radius:5px;background:#e9edf1}.mock-line{height:7px;border-radius:10px;background:#e4e7eb;margin:9px 0}.mock-line.s{width:45%}.mock-line.m{width:72%}.mock-line.l{width:92%}.floating{position:absolute;background:#fff;border:1px solid #e1e5e9;border-radius:10px;padding:11px 12px;box-shadow:var(--shadow2);font-weight:800;font-size:12px}.float1{top:40px;right:-5px}.float2{bottom:42px;left:0}.float3{top:184px;right:-17px}.float4{bottom:14px;right:42px;color:var(--green)}
+.section{padding:78px 0}.section-head{text-align:center;margin-bottom:38px}.section-head h2{font-size:clamp(36px,4vw,56px);letter-spacing:-.045em;margin:0 0 12px;font-weight:880}.section-head p{font-size:17px;color:var(--muted);max-width:800px;margin:auto}.popular,.tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.tool-card{background:#fff;border:1px solid var(--line);border-radius:4px;min-height:138px;padding:20px 18px;display:flex;gap:15px;position:relative;transition:.18s}.tool-card:hover{border-color:#b7c0ca;box-shadow:0 7px 24px rgba(33,45,66,.06);transform:translateY(-2px)}.tool-icon{width:42px;height:42px;flex:0 0 42px;border-radius:8px;color:#fff;display:grid;place-items:center;font-size:10px;font-weight:900;box-shadow:0 1px 0 rgba(255,255,255,.2) inset}.tool-icon svg{width:24px;height:24px;display:block}.tool-icon{overflow:hidden}.feature-icon{width:46px;height:46px;border-radius:10px;background:#f2f6ff;border:1px solid #dce7f8;display:grid;place-items:center}.feature-icon svg{width:28px;height:28px;display:block}.tool-icon .badge-text{font-size:10px;font-weight:900;letter-spacing:-.02em}.popular .tool-card{min-height:142px;padding:22px 18px}.popular .tool-icon{width:42px;height:42px;flex-basis:42px}.tool-main{padding-right:24px}.tool-main h3{margin:0 0 4px;font-size:16px;letter-spacing:-.015em}.tool-main p{margin:0;color:#555e68;font-size:14px;line-height:1.38}.arrow{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:24px;color:#5a6169}.tools-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap}.search{position:relative;min-width:280px;flex:1;max-width:520px}.search input{width:100%;border:1px solid var(--line);border-radius:9px;padding:12px 13px 12px 38px;outline:0;background:#fff;color:var(--text)}.search span{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#8c949e}.filter-btn{padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:#4c545e;font-weight:700}.filter-btn.active,.filter-btn:hover{background:#111;color:#fff;border-color:#111}.filter-row{display:flex;gap:8px;flex-wrap:wrap}.count{color:var(--dim);font-size:13px}.dark-strip{background:#111318;color:#fff;border-top:1px solid #111;border-bottom:1px solid #111}.feature-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.feature{padding:26px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 5px 18px rgba(24,39,75,.04)}.feature-icon{font-size:26px}.feature h3{margin:14px 0 7px}.feature p{color:var(--muted);margin:0;font-size:14px}.footer{border-top:1px solid var(--line2);padding:48px 0 72px}.footer-grid{display:grid;grid-template-columns:2fr repeat(3,1fr);gap:30px}.footer h4{margin:0 0 13px;font-size:14px}.footer a{display:block;color:#68717a;margin:9px 0;font-size:13px}.footer a:hover{color:#111}.footer-brand p{max-width:310px;color:#747c84;font-size:14px}
+/* workspace */
+.workspace{background:#f8fafc;border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}.workspace-card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow2);overflow:hidden}.workspace-head{padding:18px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--line2)}.workspace-head h3{margin:0;font-size:18px}.workspace-head .mini{margin-left:auto;color:var(--muted);font-size:12px}.workspace-body{display:grid;grid-template-columns:240px 1fr 240px;min-height:490px}.thumbs{border-right:1px solid var(--line2);padding:14px;background:#fbfcfd;overflow:auto;max-height:490px}.thumb{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px;margin-bottom:10px;cursor:grab;position:relative}.thumb.dragging{opacity:.45}.thumb img{display:block;width:100%;border-radius:4px;border:1px solid #e6e9ed}.thumb-label{display:flex;justify-content:space-between;font-size:11px;color:#6a727b;margin-top:7px}.canvas-zone{padding:26px;display:grid;place-items:center;background:#f5f7fa}.canvas-sheet{width:min(560px,90%);aspect-ratio:.707/1;background:#fff;border:1px solid #dfe4e9;box-shadow:0 20px 40px rgba(30,45,65,.1);display:grid;place-items:center;color:#8a929b;font-size:13px}.workspace-side{border-left:1px solid var(--line2);padding:18px}.workspace-side h4{margin:0 0 14px}.workspace-side button{width:100%;margin-bottom:9px}.workspace-side .tip{font-size:12px;color:var(--dim);line-height:1.55}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(10,16,24,.48);display:none;align-items:center;justify-content:center;z-index:120;padding:18px}.modal.show{display:flex}.modal-box{width:min(920px,100%);max-height:92vh;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:0 30px 90px rgba(18,28,45,.2)}.modal-top{display:flex;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line2)}.modal-top h3{margin:0;font-size:20px;letter-spacing:-.02em}.close{margin-left:auto;border:0;background:transparent;font-size:28px;color:#717982}.modal-body{padding:20px}.dropzone{border:1px dashed #bbc3cc;border-radius:12px;background:#fafbfd;padding:28px;text-align:center;transition:.15s}.dropzone.drag{border-color:var(--blue);background:var(--blueSoft)}.dropzone strong{display:block;font-size:17px}.dropzone span{display:block;color:var(--muted);font-size:13px;margin-top:6px}.pick{display:inline-block;margin-top:15px}.file-input{display:none}.file-list{display:grid;gap:8px;margin-top:14px;max-height:230px;overflow:auto}.file-row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--soft);border:1px solid var(--line2);border-radius:8px}.file-row .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.file-row small{margin-left:auto;color:var(--dim)}.remove{border:0;background:transparent;color:#8c939c;font-size:18px}.options{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}.field{display:flex;flex-direction:column;gap:7px}.field.full{grid-column:1/-1}.field label{font-size:12px;color:#5d6670;font-weight:750}.field input,.field select,.field textarea{border:1px solid var(--line);border-radius:8px;padding:10px 11px;background:#fff;color:var(--text);outline:0}.field input:focus,.field select:focus,.field textarea:focus{border-color:#7baee8;box-shadow:0 0 0 3px var(--blueSoft)}.range{width:100%}.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.notice{display:none;margin-top:12px;padding:10px 12px;border-radius:8px;font-size:13px}.notice.show{display:block}.notice.error{background:#fff1f2;border:1px solid #ffc8ce;color:#9d2634}.notice.info{background:#eff7ff;border:1px solid #cfe4ff;color:#275c8f}.progress{display:none;margin-top:17px}.progress.show{display:block}.progress-top{display:flex;justify-content:space-between;font-size:12px;color:#5e6670;margin-bottom:7px}.progress-bar{height:8px;background:#e7ebef;border-radius:999px;overflow:hidden}.progress-fill{height:100%;width:0;background:var(--blue);transition:width .25s}.status{margin-top:7px;font-size:12px;color:var(--muted)}.result-box{display:none;margin-top:18px;border:1px solid #cfe8da;background:#f4fbf7;border-radius:10px;padding:15px}.result-box.show{display:block}.result-head{display:flex;align-items:center;gap:10px}.result-head strong{font-size:15px}.result-list{margin-top:10px;display:grid;gap:8px}.result-item{display:flex;align-items:center;gap:8px;border-top:1px solid #dceee3;padding-top:9px}.result-item small{color:#66716a}.result-item a{margin-left:auto;color:#16754a;font-weight:800}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:11px}.stat{background:#fff;border:1px solid #dceee3;border-radius:8px;padding:10px}.stat b{display:block;font-size:16px}.stat span{display:block;color:#718077;font-size:11px;margin-top:2px}.organizer{display:none;margin-top:18px;border:1px solid var(--line);border-radius:10px;overflow:hidden}.organizer.show{display:block}.organizer-grid{display:grid;grid-template-columns:1fr 240px;min-height:360px}.organizer-pages{padding:12px;background:#f7f8fa;display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;align-content:start;max-height:420px;overflow:auto}.org-card{background:#fff;border:1px solid var(--line);border-radius:7px;padding:7px;cursor:grab}.org-card.dragging{opacity:.4}.org-card img{width:100%;display:block;border:1px solid #e6e9ed;border-radius:4px}.org-card div{display:flex;justify-content:space-between;margin-top:6px;font-size:10px;color:#68707a}.org-actions{border-left:1px solid var(--line2);padding:14px}.org-actions h4{margin:0 0 10px}.org-actions p{font-size:12px;color:var(--muted);line-height:1.5}.org-actions button{width:100%;margin-top:8px}
+.toast{position:fixed;right:18px;bottom:18px;background:#111318;color:#fff;padding:12px 14px;border-radius:10px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:140;font-size:13px;font-weight:720}.toast.show{opacity:1;transform:none}
+@media(max-width:1080px){.navlinks{display:none}.mobile-toggle{display:block}.dropdown{left:20px}.hero-inner{width:min(100% - 48px, 900px);grid-template-columns:1fr}.hero-visual{order:-1;min-height:340px}.popular,.tools-grid{grid-template-columns:repeat(2,1fr)}.feature-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}.workspace-body{grid-template-columns:190px 1fr}.workspace-side{display:none}}
+@media(max-width:700px){.container{width:calc(100% - 28px)}.nav{height:64px}.brand{min-width:auto}.navright .link,.navright .ghost{display:none}.hero{padding:56px 0 60px;min-height:auto}.hero-inner{width:calc(100% - 28px);grid-template-columns:1fr;gap:26px}.hero h1{font-size:48px}.hero p{font-size:18px}.hero-visual{min-height:290px}.mock-app{inset:70px 20px 32px 48px}.paper{inset:15px 22px 8px 8px}.paper2{inset:43px 12px 18px 50px}.popular,.tools-grid,.feature-grid{grid-template-columns:1fr}.section{padding:58px 0}.tools-toolbar{align-items:stretch}.search{min-width:100%;max-width:none}.footer-grid{grid-template-columns:1fr}.options,.stats{grid-template-columns:1fr}.workspace-body{display:block}.thumbs{max-height:200px;border-right:0;border-bottom:1px solid var(--line2)}.canvas-zone{min-height:330px}.modal{padding:8px}.modal-box{max-height:96vh}.dropdown.show{grid-template-columns:1fr}.dropdown{width:min(380px,calc(100vw - 30px))}}
+
+.hero-reference-visual{position:relative;min-height:490px;display:flex;align-items:center;justify-content:center;overflow:visible}.hero-reference-visual .hero-illustration{width:100%;height:auto;display:block;overflow:visible;position:relative;z-index:2}.hero-orbit{position:absolute;border-radius:50%;filter:blur(1px);pointer-events:none}.orbit-a{width:250px;height:250px;right:10px;top:110px;background:#eff5ff;opacity:.95}.orbit-b{width:180px;height:180px;left:18px;bottom:58px;background:#f7f3ff;opacity:.95}.hero-caption-pill{position:absolute;z-index:4;background:#fff;border:1px solid #e2e7ed;box-shadow:0 9px 28px rgba(24,39,75,.10);border-radius:999px;padding:9px 12px;display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;color:#2e3742;white-space:nowrap}.pill-a{top:92px;right:18px}.pill-b{left:18px;bottom:76px}.pill-c{right:0;bottom:34px}.pill-dot{width:9px;height:9px;border-radius:50%;display:inline-block}.pill-dot.teal{background:#1bc6ac}.pill-dot.purple{background:#7e69ff}.pill-dot.orange{background:#ffb000}.hero-reference-visual::after{content:"";position:absolute;right:12%;bottom:28px;width:230px;height:42px;background:radial-gradient(ellipse at center,rgba(44,71,111,.14),rgba(44,71,111,0) 70%);filter:blur(12px)}
+@media(max-width:980px){.hero-reference-visual{min-height:390px}.pill-a{top:56px;right:0}.pill-b{left:2px;bottom:54px}.pill-c{right:0;bottom:20px}}
+@media(max-width:700px){.hero-reference-visual{min-height:320px;margin-top:18px}.hero-caption-pill{font-size:10px;padding:7px 9px}.pill-a{top:34px;right:0}.pill-b{left:0;bottom:26px}.pill-c{right:0;bottom:0}.orbit-a{width:170px;height:170px}.orbit-b{width:130px;height:130px}}
+
+/* Dedicated tool pages */
+body.tool-open #top, body.tool-open .footer{display:none}
+.tool-page{display:none;min-height:calc(100vh - 74px);background:#fff}
+body.tool-open .tool-page{display:block;animation:toolPageIn .42s ease both}
+@keyframes toolPageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.tool-page-hero{position:relative;overflow:hidden;padding:22px 0 90px;background:linear-gradient(180deg,#fff 0%,#fbfcfe 100%)}
+.tool-page-container{position:relative;z-index:2}
+.tool-page-bg{position:absolute;border-radius:999px;filter:blur(1px);pointer-events:none}
+.tool-page-bg-a{width:420px;height:420px;right:-140px;top:120px;background:radial-gradient(circle at 30% 30%,rgba(20,115,230,.13),rgba(20,115,230,0) 72%);animation:orbFloat 8s ease-in-out infinite}
+.tool-page-bg-b{width:330px;height:330px;left:-140px;top:340px;background:radial-gradient(circle at 55% 50%,rgba(126,105,255,.11),rgba(126,105,255,0) 72%);animation:orbFloat 10s ease-in-out infinite reverse}
+@keyframes orbFloat{50%{transform:translateY(-18px) scale(1.04)}}
+.back-link{border:0;background:transparent;color:#515a66;padding:4px 0;font-weight:800;display:inline-flex;gap:9px;align-items:center;font-size:13px}
+.back-link:hover{color:var(--text)}
+.back-link span{font-size:18px}
+.tool-breadcrumb{margin-top:16px;display:flex;gap:8px;align-items:center;color:#8a929c;font-size:12px}
+.tool-breadcrumb strong{color:#46505c}
+.tool-page-heading{text-align:center;max-width:850px;margin:42px auto 34px}
+.tp-icon-wrap{margin:0 auto 18px;width:68px;height:68px;border-radius:18px;display:grid;place-items:center;color:#fff;box-shadow:0 12px 30px rgba(24,39,75,.12);animation:iconLift .65s ease both}
+.tp-icon-wrap svg{width:38px;height:38px}
+@keyframes iconLift{from{opacity:0;transform:translateY(8px) scale(.94)}to{opacity:1;transform:none}}
+.tool-page-heading h1{font-size:clamp(40px,5vw,58px);line-height:1.02;letter-spacing:-.045em;margin:0 0 12px;font-weight:900}
+.tool-page-heading p{font-size:18px;color:var(--muted);max-width:760px;margin:0 auto}
+.tool-workbench{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:18px;align-items:start}
+.tp-upload-panel{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 14px 38px rgba(24,39,75,.07)}
+.tp-upload-inner{min-height:440px;padding:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden;background:var(--tool-tint);border-bottom:1px solid rgba(0,0,0,.05)}
+.tp-upload-inner:before{content:"";position:absolute;inset:16px;border:1.5px dashed var(--tool-accent);border-radius:12px;opacity:.38;pointer-events:none}
+.tp-upload-inner.drag{transform:scale(.996);box-shadow:inset 0 0 0 3px rgba(255,255,255,.4);filter:saturate(1.08)}
+.tp-upload-orbit{position:absolute;width:210px;height:210px;border-radius:50%;background:rgba(255,255,255,.45);filter:blur(1px);top:50%;left:50%;transform:translate(-50%,-46%);animation:uploadPulse 4.2s ease-in-out infinite}
+@keyframes uploadPulse{50%{transform:translate(-50%,-46%) scale(1.08);opacity:.7}}
+.tp-upload-icon{position:relative;z-index:1;width:76px;height:76px;border-radius:18px;background:var(--tool-accent);display:grid;place-items:center;box-shadow:0 16px 30px rgba(24,39,75,.14);margin-bottom:20px;animation:floatIcon 4s ease-in-out infinite}
+.tp-upload-icon svg{width:44px;height:44px}
+@keyframes floatIcon{50%{transform:translateY(-7px)}}
+.tp-upload-inner h2{position:relative;z-index:1;margin:0 0 5px;font-size:25px;letter-spacing:-.02em}
+.tp-upload-inner p{position:relative;z-index:1;margin:0;color:#5f6873;font-size:14px}
+.tp-choose{position:relative;z-index:1;margin-top:22px;min-width:194px;justify-content:center;display:flex;align-items:center;gap:9px}
+.tp-file-symbol{width:20px;height:20px;border-radius:5px;background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:17px;line-height:1}
+.tp-upload-note{position:relative;z-index:1;margin-top:17px;color:#79818b;font-size:11px;max-width:500px}
+.tp-files-panel{display:none;padding:14px 16px;background:#fff}
+.tp-files-panel.show{display:block;animation:slideDown .3s ease both}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.tp-files-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line2)}
+.tp-files-head div{display:flex;flex-direction:column}.tp-files-head strong{font-size:13px}.tp-files-head span{font-size:11px;color:#8a929b;margin-top:2px}
+.tp-add-btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 11px;font-weight:750;color:#35404b}
+.tp-files-list{display:grid;gap:8px;margin-top:10px;max-height:210px;overflow:auto}
+.tp-file-row{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line2);border-radius:8px;background:#fbfcfe}
+.tp-file-row .tp-file-kind{width:30px;height:30px;border-radius:7px;display:grid;place-items:center;color:#fff;font-size:10px;font-weight:900;flex:none}
+.tp-file-row .tp-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:750;font-size:12px}
+.tp-file-row small{color:#88909a;font-size:11px}
+.tp-file-row button{border:0;background:transparent;color:#8c949e;font-size:18px}
+.tp-side{display:grid;gap:14px}
+.tp-side-card,.tp-trust-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:17px;box-shadow:0 10px 28px rgba(24,39,75,.05)}
+.tp-side-head{display:flex;align-items:center;justify-content:space-between;font-size:14px;font-weight:850;padding-bottom:13px;border-bottom:1px solid var(--line2)}
+.tp-side-dot{width:9px;height:9px;border-radius:50%;background:var(--tool-accent);box-shadow:0 0 0 4px var(--tool-tint)}
+.tp-options{display:grid;gap:11px;padding-top:14px}
+.tp-field{display:flex;flex-direction:column;gap:7px}
+.tp-field.full{grid-column:1/-1}
+.tp-field label{font-size:11px;color:#69727d;font-weight:850}
+.tp-field input,.tp-field select,.tp-field textarea{border:1px solid var(--line);border-radius:8px;padding:9px 10px;background:#fff;color:var(--text);outline:0;width:100%}
+.tp-field textarea{min-height:92px;resize:vertical}
+.tp-field input:focus,.tp-field select:focus,.tp-field textarea:focus{border-color:var(--tool-accent);box-shadow:0 0 0 3px var(--tool-tint)}
+.tp-range-label{display:flex;justify-content:space-between;align-items:center}.tp-range-value{color:var(--tool-accent)}
+.tp-process-btn{width:100%;margin-top:15px;background:var(--tool-accent);border-color:var(--tool-accent)}
+.tp-process-btn:hover{filter:brightness(.94)}
+.tp-reset-btn{width:100%;margin-top:9px}
+.tp-trust-card{background:linear-gradient(180deg,#fff 0%,#fbfcfd 100%)}
+.tp-mini-check{display:flex;gap:10px;align-items:flex-start;padding:10px 0}.tp-mini-check+.tp-mini-check{border-top:1px solid var(--line2)}
+.tp-mini-check>span{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--tool-tint);color:var(--tool-accent);font-weight:900;flex:none}
+.tp-mini-check strong{display:block;font-size:12px}.tp-mini-check p{margin:3px 0 0;color:#7a828c;font-size:11px;line-height:1.45}
+.tp-progress-wrap{display:none;margin-top:16px;padding:15px 16px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 25px rgba(24,39,75,.05)}
+.tp-progress-wrap.show{display:block;animation:slideDown .3s ease both}
+.tp-progress-head{display:flex;justify-content:space-between;font-size:12px;margin-bottom:8px}.tp-progress-head span{color:var(--tool-accent);font-weight:900}
+.tp-progress-track{height:9px;border-radius:999px;background:#edf0f3;overflow:hidden}.tp-progress-fill{height:100%;width:0;background:var(--tool-accent);transition:width .28s ease}
+.tp-progress-status{font-size:11px;color:#7a828c;margin-top:7px}
+.tp-result{display:none;margin-top:16px;background:linear-gradient(180deg,#fff 0%,#f7fbf8 100%);border:1px solid #cfe7d8;border-radius:14px;padding:18px;box-shadow:0 10px 28px rgba(24,39,75,.05)}
+.tp-result.show{display:block;animation:resultIn .42s ease both}
+@keyframes resultIn{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+.tp-result-main{display:flex;gap:12px;align-items:center}.tp-result-icon{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#e8f8ef;color:#1f9d61;font-weight:900;font-size:19px}.tp-result-kicker{text-transform:uppercase;letter-spacing:.12em;color:#5f8a72;font-size:10px;font-weight:900}.tp-result h3{margin:2px 0 2px;font-size:18px}.tp-result p{margin:0;color:#6e7b73;font-size:12px}
+.tp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px}.tp-stat{padding:11px;border:1px solid #dceee3;border-radius:9px;background:#fff}.tp-stat b{display:block;font-size:16px}.tp-stat span{display:block;color:#778279;font-size:10px;margin-top:2px}
+.tp-downloads{display:grid;gap:8px;margin-top:12px}.tp-download{display:flex;align-items:center;gap:9px;border-top:1px solid #deeee5;padding-top:9px}.tp-download-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:800}.tp-download-size{color:#7b867e;font-size:10px}.tp-download a{color:#17764d;font-size:11px;font-weight:900}
+.tp-result-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:15px}
+.tp-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:38px}
+.tp-info-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px;position:relative;overflow:hidden}
+.tp-info-card:after{content:"";position:absolute;right:-36px;bottom:-56px;width:120px;height:120px;border-radius:50%;background:var(--tool-tint)}
+.tp-info-number{font-size:11px;font-weight:900;color:var(--tool-accent);letter-spacing:.08em}.tp-info-card h3{margin:12px 0 6px;font-size:16px}.tp-info-card p{margin:0;color:#6e7782;font-size:12px;line-height:1.55}
+.tp-related{margin-top:58px}.tp-related-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:18px}.tp-related-head h2{margin:5px 0 0;font-size:30px;letter-spacing:-.035em}.section-eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:10px;font-weight:900;color:#8a929b}
+.tp-related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.tp-related-card{border:1px solid var(--line);border-radius:12px;padding:15px;background:#fff;display:flex;gap:12px;align-items:center;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s}.tp-related-card:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(24,39,75,.07);border-color:#c5ccd4}
+.tp-related-icon{width:40px;height:40px;border-radius:8px;color:#fff;display:grid;place-items:center;flex:none}.tp-related-icon svg{width:24px;height:24px}.tp-related-card h4{margin:0 0 3px;font-size:13px}.tp-related-card p{margin:0;color:#7a828c;font-size:10px;line-height:1.45}
+.tp-related-arrow{margin-left:auto;color:#7b838d;font-size:20px}
+@media(max-width:980px){.tool-workbench{grid-template-columns:1fr}.tp-side{grid-template-columns:1fr 1fr}.tp-info-grid,.tp-related-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.tool-page-hero{padding-bottom:60px}.tool-page-heading{margin-top:30px}.tool-page-heading h1{font-size:38px}.tool-page-heading p{font-size:16px}.tool-workbench{gap:12px}.tp-upload-inner{min-height:390px;padding:30px 18px}.tp-side{grid-template-columns:1fr}.tp-info-grid,.tp-related-grid{grid-template-columns:1fr}.tp-related-head{align-items:center}.tp-related-head h2{font-size:25px}.tp-related-head .ghost{padding:9px 10px}.tp-stats{grid-template-columns:1fr}.tp-result-actions{flex-direction:column}.tp-result-actions button{width:100%}}
+@media(prefers-reduced-motion:reduce){.tool-page,.tp-icon-wrap,.tp-upload-orbit,.tp-upload-icon,.tool-page-bg-a,.tool-page-bg-b,.tp-result,.tp-files-panel{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="#top"><span class="brandmark"></span><span>PaperPilot</span></a>
+    <nav class="navlinks" aria-label="Main navigation">
+      <button class="tools-btn" id="toolsMenuBtn"><span class="gridicon"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>Tools⌄</button>
+      <a href="#popular">Compress</a><a href="#tools">Convert</a><a href="#workspace">Edit</a><a href="#ai">AI PDF</a>
+    </nav>
+    <div class="navright"><a class="link" href="#features">Features</a><button class="ghost" id="openSearch">Search</button><button class="primary" id="heroUpload">Get Started</button><button class="mobile-toggle" id="mobileMenu">☰</button></div>
+  </div>
+  <div class="container"><div class="dropdown" id="toolsMenu"></div></div>
+</header>
+
+<main id="top">
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <span class="eyebrow">✦ Fast local PDF & image processing</span>
+      <h1>Make documents simple.</h1>
+      <p>Compress, convert, edit and organize PDFs, images and office files in one clean workspace — built for speed and everyday productivity.</p>
+      <div class="hero-actions"><button class="primary" id="heroUpload2">Choose files</button><button class="ghost" onclick="document.getElementById('tools').scrollIntoView({behavior:'smooth'})">Explore all tools</button></div>
+      <div class="hero-note"><span>✓ 50+ tools</span><span>✓ Batch processing</span><span>✓ Live progress</span><span>✓ No forced cloud account</span></div>
+    </div>
+    <div class="hero-visual hero-reference-visual" aria-label="PaperPilot document editing illustration">
+      <div class="hero-orbit orbit-a"></div><div class="hero-orbit orbit-b"></div>
+      <svg class="hero-illustration" viewBox="0 0 700 470" role="img" aria-hidden="true">
+        <defs>
+          <filter id="heroShadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#16324f" flood-opacity=".14"/></filter>
+          <filter id="heroSoft" x="-30%" y="-30%" width="160%" height="160%"><feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#16324f" flood-opacity=".10"/></filter>
+          <linearGradient id="paperBlue" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#edf4ff"/><stop offset="1" stop-color="#dce8fb"/></linearGradient>
+          <linearGradient id="paperWhite" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f7f9fc"/></linearGradient>
+        </defs>
+        <!-- layered paper sheets -->
+        <rect x="396" y="84" width="232" height="318" rx="20" fill="url(#paperBlue)" transform="rotate(11 512 243)"/>
+        <rect x="304" y="118" width="274" height="334" rx="20" fill="#eef3fb" transform="rotate(-14 441 285)"/>
+        <!-- central editor window -->
+        <g filter="url(#heroShadow)">
+          <rect x="214" y="88" width="386" height="286" rx="11" fill="#ffffff" stroke="#dfe5ec"/>
+          <rect x="214" y="88" width="386" height="34" rx="11" fill="#fbfcfe"/>
+          <circle cx="229" cy="105" r="4" fill="#c8cfd7"/><circle cx="242" cy="105" r="4" fill="#c8cfd7"/><circle cx="255" cy="105" r="4" fill="#c8cfd7"/>
+          <text x="273" y="109" fill="#4c5663" font-size="11" font-weight="800" font-family="Lato, Arial, sans-serif">PaperPilot</text>
+          <rect x="227" y="131" width="360" height="30" rx="6" fill="#fafbfd" stroke="#e7ebf0"/>
+          <g fill="#77808a">
+            <rect x="238" y="141" width="16" height="10" rx="2"/><rect x="262" y="141" width="16" height="10" rx="2"/><rect x="286" y="141" width="16" height="10" rx="2"/>
+            <rect x="319" y="141" width="16" height="10" rx="2"/><rect x="343" y="141" width="16" height="10" rx="2"/>
+            <rect x="376" y="141" width="16" height="10" rx="2"/><rect x="400" y="141" width="16" height="10" rx="2"/>
+          </g>
+          <rect x="251" y="177" width="292" height="178" rx="3" fill="#ffffff" stroke="#e0e5eb"/>
+          <rect x="274" y="195" width="230" height="5" rx="3" fill="#dfe4ea"/><rect x="274" y="207" width="200" height="5" rx="3" fill="#e9edf1"/>
+          <rect x="274" y="219" width="160" height="5" rx="3" fill="#e9edf1"/><rect x="274" y="243" width="250" height="5" rx="3" fill="#e9edf1"/>
+          <rect x="274" y="255" width="218" height="5" rx="3" fill="#e9edf1"/><rect x="274" y="267" width="198" height="5" rx="3" fill="#e9edf1"/>
+          <rect x="274" y="279" width="248" height="5" rx="3" fill="#e9edf1"/><rect x="274" y="291" width="184" height="5" rx="3" fill="#e9edf1"/>
+          <rect x="274" y="315" width="74" height="22" rx="4" fill="#e8f1ff"/><text x="311" y="330" text-anchor="middle" fill="#1473e6" font-size="10" font-weight="800" font-family="Lato, Arial, sans-serif">Editable</text>
+          <!-- selected text box -->
+          <rect x="409" y="232" width="77" height="35" rx="3" fill="#f4f8ff" stroke="#3f8cff" stroke-width="1.5"/>
+          <circle cx="409" cy="232" r="3" fill="#3f8cff"/><circle cx="486" cy="232" r="3" fill="#3f8cff"/><circle cx="409" cy="267" r="3" fill="#3f8cff"/><circle cx="486" cy="267" r="3" fill="#3f8cff"/>
+          <text x="447" y="254" text-anchor="middle" fill="#2b4a70" font-size="12" font-weight="700" font-family="Lato, Arial, sans-serif">Hello!</text>
+          <!-- selected circle -->
+          <circle cx="492" cy="292" r="26" fill="#d6e4ff" stroke="#6f9dff" stroke-width="2"/>
+          <circle cx="492" cy="266" r="3" fill="#6f9dff"/><circle cx="492" cy="318" r="3" fill="#6f9dff"/>
+          <!-- signature -->
+          <path d="M386 326c8-19 18-20 21-9 3 11 7 16 13 12 8-6 14-24 17-18 2 4-3 18-9 22 7 1 15-5 21-13" fill="none" stroke="#ff546d" stroke-width="3" stroke-linecap="round"/>
+        </g>
+        <!-- colorful floating feature icons -->
+        <g filter="url(#heroSoft)">
+          <g transform="translate(120 76)"><rect width="56" height="56" rx="10" fill="#1bc6ac"/><path d="M16 17h23v20H16z" fill="none" stroke="#fff" stroke-width="2"/><path d="M22 27h10M22 32h7M39 18v8h-8" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M34 16l8-4" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
+          <g transform="translate(270 30)"><rect width="48" height="48" rx="10" fill="#7e69ff"/><path d="M14 13h17v20H14zM20 18h17v18H20z" fill="none" stroke="#fff" stroke-width="2"/><path d="M25 24h7M28.5 20.5v7" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
+          <g transform="translate(82 262)"><rect width="56" height="56" rx="10" fill="#d94ce6"/><path d="M16 17h24v14H16z" fill="none" stroke="#fff" stroke-width="2"/><path d="M20 24h16M22 34h12" stroke="#fff" stroke-width="2" stroke-linecap="round"/><path d="M25 17l4 8 4-8" fill="none" stroke="#fff" stroke-width="2"/></g>
+          <g transform="translate(590 235)"><rect width="52" height="52" rx="10" fill="#ffb000"/><rect x="12" y="12" width="28" height="28" rx="3" fill="none" stroke="#fff" stroke-width="2"/><circle cx="20" cy="20" r="3" fill="#fff"/><path d="M15 35l8-8 5 5 5-7 7 10" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></g>
+          <g transform="translate(626 128)"><rect width="52" height="52" rx="10" fill="#1682d9"/><text x="26" y="35" text-anchor="middle" fill="#fff" font-size="27" font-weight="900" font-family="Lato, Arial, sans-serif">W</text></g>
+          <g transform="translate(564 348)"><rect width="52" height="52" rx="10" fill="#ef4444"/><path d="M15 16h22v20H15z" fill="none" stroke="#fff" stroke-width="2"/><path d="M20 22h12M20 27h8M20 32h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g>
+        </g>
+        <!-- decorative symbols -->
+        <g fill="none" stroke-linecap="round">
+          <path d="M94 44h0M103 44h0M94 53h0M103 53h0" stroke="#ffb000" stroke-width="7"/>
+          <circle cx="180" cy="54" r="7" stroke="#ff5a72" stroke-width="4"/>
+          <path d="M635 44l8 8m0-8-8 8" stroke="#16c2be" stroke-width="3"/>
+          <circle cx="228" cy="405" r="7" stroke="#13bda7" stroke-width="3"/>
+          <path d="M328 421l8 8m0-8-8 8" stroke="#ff5a72" stroke-width="3"/>
+        </g>
+        <!-- mouse cursor -->
+        <path d="M520 367l-11-1 7 18 4-6 6 6 4-4-7-6z" fill="#111822"/>
+      </svg>
+      <div class="hero-caption-pill pill-a"><span class="pill-dot teal"></span>Edit PDF</div>
+      <div class="hero-caption-pill pill-b"><span class="pill-dot purple"></span>Merge & organize</div>
+      <div class="hero-caption-pill pill-c"><span class="pill-dot orange"></span>Convert files</div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="popular">
+  <div class="container"><div class="section-head"><h2>Most popular tools</h2><p>Start with the tools people use most for documents, images and fast file cleanup.</p></div><div class="popular" id="popularGrid"></div></div>
+</section>
+
+<section class="section" id="workspace">
+  <div class="container"><div class="section-head"><h2>A real document workspace</h2><p>Upload once, preview pages, reorder a PDF visually, batch-process images and watch every job finish with clear progress and size stats.</p></div>
+    <div class="workspace-card"><div class="workspace-head"><h3>Visual PDF organizer</h3><span class="mini">drag page thumbnails to reorder</span></div><div class="workspace-body"><div class="thumbs" id="workspaceThumbs"><div style="color:#9299a1;font-size:12px;text-align:center;padding:30px 8px">Open Organize PDF from the tools list to load a real document here.</div></div><div class="canvas-zone"><div class="canvas-sheet" id="workspaceCanvas">PDF page preview appears here</div></div><div class="workspace-side"><h4>Workspace tools</h4><button class="primary" data-tool="organize-pdf">Organize PDF</button><button class="ghost" data-tool="merge-pdf">Merge PDFs</button><button class="ghost" data-tool="split-pdf">Split PDF</button><p class="tip">The organizer uses browser-side PDF rendering for quick visual feedback, then sends only the ordered page numbers to the FastAPI processing job.</p></div></div></div>
+  </div>
+</section>
+
+<section class="section" id="tools">
+  <div class="container"><div class="section-head"><h2>All tools</h2><p>Search the complete library and launch a dedicated processing workflow in one click.</p></div>
+    <div class="tools-toolbar"><div class="search"><span>⌕</span><input id="toolSearch" placeholder="Search tools… e.g. compress, merge, OCR"></div><div class="filter-row" id="filters"></div><span class="count" id="toolCount"></span></div>
+    <div class="tools-grid" id="toolsGrid"></div>
+  </div>
+</section>
+
+<section class="section dark-strip" id="features"><div class="container"><div class="section-head"><h2>Built like a real file product.</h2><p>Ten foundational upgrades are included in this build — from a unified job API to visual PDF pages and real local OCR.</p></div><div class="feature-grid"><div class="feature"><div class="feature-icon" data-feature-icon="jobs"></div><h3>Unified jobs</h3><p>One asynchronous API with queued, processing, completed and error states.</p></div><div class="feature"><div class="feature-icon" data-feature-icon="tools"></div><h3>50+ tools</h3><p>PDF, image, office and AI utilities organized with search and category filters.</p></div><div class="feature"><div class="feature-icon" data-feature-icon="organizer"></div><h3>Visual organizer</h3><p>Preview PDF pages in the browser and submit a custom page order.</p></div><div class="feature"><div class="feature-icon" data-feature-icon="stats"></div><h3>Live statistics</h3><p>Every result reports original size, output size and savings when meaningful.</p></div><div class="feature"><div class="feature-icon" data-feature-icon="images"></div><h3>Image batch studio</h3><p>Convert or compress many images in one job with consistent settings.</p></div><div class="feature"><div class="feature-icon" data-feature-icon="ocr"></div><h3>Real OCR</h3><p>Tesseract integration creates searchable PDFs when installed on the server.</p></div><div class="feature"><div class="feature-icon" data-feature-icon="office"></div><h3>Office to PDF</h3><p>LibreOffice integration supports common Word, Excel, PowerPoint and office formats.</p></div><div class="feature"><div class="feature-icon" data-feature-icon="edit"></div><h3>PDF editing</h3><p>Annotations, watermarks, signatures, forms, crop, redact, number and security tools.</p></div></div></div></section>
+
+<section class="section" id="ai"><div class="container"><div class="section-head"><h2>AI PDF utilities</h2><p>Local text extraction, summarization, question generation and retrieval are available without pretending an external model is connected.</p></div><div class="popular" id="aiGrid"></div></div></section>
+</main>
+
+<section class="tool-page" id="toolPage" aria-hidden="true">
+  <div class="tool-page-hero" id="toolHero">
+    <div class="tool-page-bg tool-page-bg-a"></div>
+    <div class="tool-page-bg tool-page-bg-b"></div>
+    <div class="container tool-page-container">
+      <button class="back-link" id="toolBack" type="button"><span>←</span> Back to all tools</button>
+      <div class="tool-breadcrumb"><span>Home</span><span>›</span><span>Tools</span><span>›</span><strong id="tpBreadcrumb">Tool</strong></div>
+
+      <div class="tool-page-heading">
+        <div class="tp-icon-wrap" id="tpIconWrap"></div>
+        <h1 id="tpTitle">Tool</h1>
+        <p id="tpLead">Process your file in a clean, focused workspace.</p>
+      </div>
+
+      <div class="tool-workbench">
+        <div class="tp-upload-panel" id="tpUploadPanel">
+          <div class="tp-upload-inner" id="tpDropzone">
+            <div class="tp-upload-orbit"></div>
+            <div class="tp-upload-icon" id="tpUploadIcon"></div>
+            <h2 id="tpDropTitle">Drop your files here</h2>
+            <p id="tpDropHint">or choose files from your device</p>
+            <button class="tp-choose primary" id="tpPickBtn" type="button"><span class="tp-file-symbol">＋</span><span>Choose files</span></button>
+            <input class="file-input" type="file" id="tpFileInput" multiple>
+            <div class="tp-upload-note" id="tpUploadNote">Your files stay in your local processing workflow until you start the job.</div>
+          </div>
+
+          <div class="tp-files-panel" id="tpFilesPanel">
+            <div class="tp-files-head"><div><strong id="tpFilesCount">0 files</strong><span>ready to process</span></div><button class="tp-add-btn" id="tpAddMore" type="button">＋ Add more</button></div>
+            <div class="tp-files-list" id="tpFilesList"></div>
+          </div>
+        </div>
+
+        <aside class="tp-side">
+          <div class="tp-side-card">
+            <div class="tp-side-head"><span>Tool settings</span><span class="tp-side-dot" id="tpSideDot"></span></div>
+            <div id="tpOptions" class="tp-options"></div>
+            <button class="primary tp-process-btn" id="tpRunBtn" type="button">Process files</button>
+            <button class="ghost tp-reset-btn" id="tpClearBtn" type="button">Clear files</button>
+          </div>
+
+          <div class="tp-trust-card">
+            <div class="tp-mini-check"><span>✓</span><div><strong>Fast local workflow</strong><p>Built around your FastAPI document engine.</p></div></div>
+            <div class="tp-mini-check"><span>✓</span><div><strong>Clear progress</strong><p>Watch the job move from queued to complete.</p></div></div>
+            <div class="tp-mini-check"><span>✓</span><div><strong>Real output stats</strong><p>See output size and savings when available.</p></div></div>
+          </div>
+        </aside>
+      </div>
+
+      <div class="tp-progress-wrap" id="tpProgress">
+        <div class="tp-progress-head"><strong id="tpProgressStage">Ready</strong><span id="tpProgressPct">0%</span></div>
+        <div class="tp-progress-track"><div class="tp-progress-fill" id="tpProgressFill"></div></div>
+        <div class="tp-progress-status" id="tpProgressStatus">Preparing your files…</div>
+      </div>
+
+      <div class="tp-result" id="tpResult">
+        <div class="tp-result-main">
+          <div class="tp-result-icon">✓</div>
+          <div><span class="tp-result-kicker">Completed</span><h3 id="tpResultTitle">Your files are ready.</h3><p id="tpResultCopy">Processing finished successfully.</p></div>
+        </div>
+        <div class="tp-stats" id="tpStats"></div>
+        <div class="tp-downloads" id="tpDownloads"></div>
+        <div class="tp-result-actions"><button class="primary" id="tpProcessAgain" type="button">Process again</button><button class="ghost" id="tpBackAfter" type="button">Back to tools</button></div>
+      </div>
+
+      <div class="tp-info-grid">
+        <div class="tp-info-card">
+          <span class="tp-info-number">01</span>
+          <h3>Drop your file</h3>
+          <p>Choose one or more supported files or drag them into the upload area.</p>
+        </div>
+        <div class="tp-info-card">
+          <span class="tp-info-number">02</span>
+          <h3>Adjust settings</h3>
+          <p>Use the relevant controls for this tool. Everything else stays out of the way.</p>
+        </div>
+        <div class="tp-info-card">
+          <span class="tp-info-number">03</span>
+          <h3>Download your result</h3>
+          <p>Watch the job finish and download the generated files from one clean result panel.</p>
+        </div>
+      </div>
+
+      <div class="tp-related">
+        <div class="tp-related-head"><div><span class="section-eyebrow">Keep going</span><h2>Related tools</h2></div><button class="ghost" id="tpViewAll" type="button">View all tools</button></div>
+        <div class="tp-related-grid" id="tpRelatedGrid"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="container footer-grid"><div class="footer-brand"><a class="brand" href="#top"><span class="brandmark"></span><span>PaperPilot</span></a><p>Simple, focused document utilities for PDFs, images and everyday file conversion.</p></div><div><h4>Solutions</h4><a href="#tools">PDF tools</a><a href="#tools">Image tools</a><a href="#tools">Office tools</a><a href="#ai">AI PDF</a></div><div><h4>Product</h4><a href="#popular">Popular tools</a><a href="#workspace">Workspace</a><a href="#features">Features</a><a href="#tools">All tools</a></div><div><h4>Developer</h4><a href="/docs" target="_blank">API docs</a><a href="/api/health" target="_blank">Health</a><a href="#top">Local-first</a><a href="#top">Privacy focused</a></div></div></footer>
+
+<div class="modal" id="toolModal" aria-hidden="true"><div class="modal-box"><div class="modal-top"><h3 id="modalTitle">Tool</h3><button class="close" id="modalClose" aria-label="Close">×</button></div><div class="modal-body"><div class="dropzone" id="dropzone"><strong id="dropTitle">Drop files here</strong><span id="dropHint">or browse from your device</span><button class="primary pick" id="pickBtn">Choose files</button><input class="file-input" type="file" id="fileInput" multiple></div><div class="file-list" id="fileList"></div><div class="options" id="options"></div><div class="organizer" id="organizer"><div class="organizer-grid"><div class="organizer-pages" id="organizerPages"></div><div class="org-actions"><h4>Page order</h4><p>Drag thumbnails to change the order. Rotate or remove pages visually, then process the new sequence.</p><button class="ghost" id="rotatePageBtn">Rotate selected</button><button class="ghost" id="deletePageBtn">Delete selected</button><button class="primary" id="applyOrderBtn">Use this order</button></div></div></div><div class="notice" id="notice"></div><div class="progress" id="progress"><div class="progress-top"><span id="progressStage">Queued</span><span id="progressPct">0%</span></div><div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div><div class="status" id="progressStatus">Preparing…</div></div><div class="result-box" id="resultBox"><div class="result-head"><span style="font-size:18px">✓</span><strong>Completed</strong></div><div class="stats" id="stats"></div><div class="result-list" id="resultList"></div></div><div class="modal-actions"><button class="ghost" id="cancelBtn">Cancel</button><button class="primary" id="runBtn">Process files</button></div></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+const API='';
+const tools=[
+{id:'compress-pdf',n:'Compress PDF',d:'Reduce PDF size without unnecessary quality loss.',c:'PDF',i:'PDF',col:'#ef4444'},
+{id:'pdf-converter',n:'PDF Converter',d:'Convert PDF to Word, Excel or PowerPoint.',c:'PDF',i:'PDF',col:'#ef4444'},
+{id:'pdf-ocr',n:'PDF OCR',d:'Make scanned documents searchable with OCR.',c:'PDF',i:'OCR',col:'#ef4444'},
+{id:'jpg-to-pdf',n:'JPG to PDF',d:'Turn JPG, PNG, BMP, GIF and TIFF images into PDF.',c:'PDF',i:'IMG',col:'#ffb000'},
+{id:'pdf-to-jpg',n:'PDF to JPG',d:'Render PDF pages as JPG images.',c:'PDF',i:'IMG',col:'#ffb000'},
+{id:'pdf-to-png',n:'PDF to PNG',d:'Render PDF pages as crisp PNG images.',c:'PDF',i:'PNG',col:'#ffb000'},
+{id:'pdf-to-word',n:'PDF to Word',d:'Convert extractable PDF text to DOCX.',c:'Documents',i:'W',col:'#1682d9'},
+{id:'pdf-to-excel',n:'PDF to Excel',d:'Extract page text into editable spreadsheets.',c:'Documents',i:'X',col:'#169c39'},
+{id:'pdf-to-ppt',n:'PDF to PPT',d:'Convert PDF pages into PowerPoint slides.',c:'Documents',i:'P',col:'#ff7a00'},
+{id:'word-to-pdf',n:'Word to PDF',d:'Convert Word and supported office documents to PDF.',c:'Documents',i:'W',col:'#1682d9'},
+{id:'excel-to-pdf',n:'Excel to PDF',d:'Convert spreadsheets to PDF.',c:'Documents',i:'X',col:'#169c39'},
+{id:'ppt-to-pdf',n:'PPT to PDF',d:'Convert presentations to PDF.',c:'Documents',i:'P',col:'#ff7a00'},
+{id:'txt-to-pdf',n:'TXT to PDF',d:'Convert plain text files to PDF.',c:'Documents',i:'TXT',col:'#1682d9'},
+{id:'rtf-to-pdf',n:'RTF to PDF',d:'Convert RTF documents to PDF.',c:'Documents',i:'RTF',col:'#1682d9'},
+{id:'odt-to-pdf',n:'ODT to PDF',d:'Convert OpenDocument text files to PDF.',c:'Documents',i:'ODT',col:'#1682d9'},
+{id:'ods-to-pdf',n:'ODS to PDF',d:'Convert OpenDocument spreadsheets to PDF.',c:'Documents',i:'ODS',col:'#1a9d41'},
+{id:'odp-to-pdf',n:'ODP to PDF',d:'Convert OpenDocument presentations to PDF.',c:'Documents',i:'ODP',col:'#ff8800'},
+{id:'html-to-pdf',n:'HTML to PDF',d:'Render HTML documents into printable PDF.',c:'Documents',i:'HTML',col:'#1682d9'},
+{id:'epub-to-pdf',n:'EPUB to PDF',d:'Convert EPUB books through the local conversion stack.',c:'Documents',i:'EPUB',col:'#1682d9'},
+{id:'csv-to-pdf',n:'CSV to PDF',d:'Turn CSV tables into clean PDF documents.',c:'Documents',i:'CSV',col:'#1682d9'},
+{id:'hwp-to-pdf',n:'HWP to PDF',d:'Convert HWP when a compatible office converter is installed.',c:'Documents',i:'HWP',col:'#1682d9'},
+{id:'zip-to-pdf',n:'ZIP to PDF',d:'Collect supported files from a ZIP into one PDF.',c:'Documents',i:'ZIP',col:'#1682d9'},
+{id:'merge-pdf',n:'Merge PDF',d:'Combine multiple PDFs into one unified document.',c:'Organize',i:'⊞',col:'#8a6bff'},
+{id:'split-pdf',n:'Split PDF',d:'Extract pages or save each selected page as a separate PDF.',c:'Organize',i:'✂',col:'#8a6bff'},
+{id:'organize-pdf',n:'Organize PDF',d:'Rearrange pages, delete, duplicate and rotate by visual order.',c:'Organize',i:'▦',col:'#8a6bff'},
+{id:'delete-pdf-pages',n:'Delete PDF Pages',d:'Remove one or more pages from a PDF.',c:'Organize',i:'▱',col:'#8a6bff'},
+{id:'extract-pdf-pages',n:'Extract PDF Pages',d:'Pick only the pages you need into a new PDF.',c:'Organize',i:'↗',col:'#8a6bff'},
+{id:'rotate-pdf',n:'Rotate PDF',d:'Rotate one, many or all PDF pages.',c:'Organize',i:'↻',col:'#8a6bff'},
+{id:'protect-pdf',n:'Protect PDF',d:'Encrypt a PDF with a password.',c:'Security',i:'🔒',col:'#db335a'},
+{id:'unlock-pdf',n:'Unlock PDF',d:'Remove password encryption when the password is known.',c:'Security',i:'🔓',col:'#db335a'},
+{id:'flatten-pdf',n:'Flatten PDF',d:'Rasterize pages into a simpler non-editable PDF.',c:'Security',i:'↓',col:'#db335a'},
+{id:'sign-pdf',n:'Sign PDF',d:'Place a signature label on a PDF page.',c:'Edit',i:'✎',col:'#d83cc9'},
+{id:'watermark-pdf',n:'Watermark PDF',d:'Add a diagonal watermark to selected pages.',c:'Edit',i:'◢',col:'#0c8f9d'},
+{id:'number-pages',n:'Number Pages',d:'Insert page numbers into your PDF.',c:'Edit',i:'1²',col:'#0c8f9d'},
+{id:'crop-pdf',n:'Crop PDF',d:'Crop page bounds using PDF point offsets.',c:'Edit',i:'⌗',col:'#0c8f9d'},
+{id:'redact-pdf',n:'Redact PDF',d:'Permanently cover selected document rectangles.',c:'Edit',i:'☷',col:'#0c8f9d'},
+{id:'edit-pdf',n:'Edit PDF',d:'Add text annotations and simple edits.',c:'Edit',i:'T',col:'#0c8f9d'},
+{id:'pdf-annotator',n:'PDF Annotator',d:'Write and highlight on PDF pages.',c:'Edit',i:'✎',col:'#0c8f9d'},
+{id:'pdf-form-filler',n:'PDF Form Filler',d:'Place typed values onto PDF pages.',c:'Edit',i:'▤',col:'#0c8f9d'},
+{id:'pdf-reader',n:'PDF Reader',d:'Preview the first page and extract the text layer.',c:'PDF',i:'▤',col:'#0c8f9d'},
+{id:'compress-image',n:'Compress Image',d:'Batch-compress images with quality and dimension controls.',c:'Images',i:'IMG',col:'#ffb000'},
+{id:'image-converter',n:'Image Converter',d:'Batch convert JPG, PNG, WEBP, BMP and TIFF.',c:'Images',i:'IMG',col:'#ffb000'},
+{id:'resize-image',n:'Resize Image',d:'Resize images with contain, cover or exact sizing.',c:'Images',i:'↔',col:'#ffb000'},
+{id:'images-to-pdf',n:'Images to PDF',d:'Combine many images into one PDF.',c:'Images',i:'PDF',col:'#ffb000'},
+{id:'pdf-scanner',n:'PDF Scanner',d:'Process camera-style images into a cleaner scanned PDF.',c:'Images',i:'SCAN',col:'#8f8bff'},
+{id:'pdf-to-webp',n:'PDF to WEBP',d:'Render PDF pages into compact WEBP images.',c:'Images',i:'WEBP',col:'#ffb000'},
+{id:'pdf-thumbnails',n:'PDF Thumbnails',d:'Render a page thumbnail bundle for previews.',c:'PDF',i:'TH',col:'#8a6bff'},
+{id:'ai-pdf-assistant',n:'AI PDF Assistant',d:'Create a local extracted-text report from a PDF.',c:'AI',i:'AI',col:'#908bff'},
+{id:'chat-with-pdf',n:'Chat with PDF',d:'Ask a PDF a question using local text retrieval.',c:'AI',i:'AI',col:'#908bff'},
+{id:'ai-pdf-summarizer',n:'AI PDF Summarizer',d:'Create an extractive summary from PDF text.',c:'AI',i:'AI',col:'#908bff'},
+{id:'ai-question-generator',n:'AI Question Generator',d:'Generate practice questions from a document.',c:'AI',i:'AI',col:'#908bff'},
+{id:'translate-pdf',n:'Translate PDF',d:'Prepare extracted text for translation workflows.',c:'AI',i:'文',col:'#908bff'},
+{id:'pdf-to-pdfa',n:'PDF to PDF/A',d:'Create an archive-style PDF where supported by the server.',c:'PDF',i:'PDF/A',col:'#ef4444'},
+{id:'pdf-to-text',n:'PDF to Text',d:'Extract the text layer from every PDF page.',c:'PDF',i:'TXT',col:'#0c8f9d'},
+
+
+
+{id:'job-history',n:'Job History',d:'Review completed jobs stored in this browser session.',c:'Utilities',i:'↺',col:'#1473e6'}
+];
+const popularIds=['compress-pdf','merge-pdf','jpg-to-pdf','pdf-to-jpg','pdf-to-word','pdf-ocr','split-pdf','compress-image','pdf-to-png','protect-pdf'];
+const aiIds=['ai-pdf-assistant','chat-with-pdf','ai-pdf-summarizer','ai-question-generator','translate-pdf','pdf-to-text'];
+const iconColors={PDF:'#ef4444',Images:'#ffb000',Documents:'#1682d9',Organize:'#8a6bff',Security:'#db335a',Edit:'#0c8f9d',AI:'#908bff',Utilities:'#1473e6'};
+let selectedTool=null, selectedFiles=[], currentJob=null, organizerPages=[], organizerSelected=null, pollTimer=null;
+const $=id=>document.getElementById(id);
+function selectedRotations(){const r={};document.querySelectorAll('#organizerPages .org-card').forEach(x=>{const a=Number(x.dataset.rotate||0);if(a)r[x.dataset.page]=a%360});return r}
+function bytes(n){if(!n&&n!==0)return'—';const u=['B','KB','MB','GB'];let i=0,v=n;while(v>=1024&&i<3){v/=1024;i++}return `${v.toFixed(v>=100?0:v>=10?1:2)} ${u[i]}`}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2600)}
+function iconWrap(inner){return `<svg viewBox="0 0 32 32" fill="none" aria-hidden="true">${inner}</svg>`}
+function docIcon(label, stroke='#ef4444', extra=''){return iconWrap(`<path d="M7 4.5h11l7 7v16H7z" fill="white"/><path d="M18 4.5v7h7" stroke="${stroke}" stroke-width="1.6" stroke-linejoin="round"/>${extra}<text x="15.8" y="22.3" text-anchor="middle" font-size="7.2" font-weight="900" font-family="Lato, Arial, sans-serif" fill="${stroke}">${label}</text>`)}
+function imageIcon(stroke='#ffb000', detail='image'){const body=`<rect x="4.7" y="5" width="22.6" height="22" rx="2.7" fill="white"/><circle cx="11" cy="11" r="2" fill="${stroke}"/><path d="M7.5 23l5.2-5.7 4.1 3.1 3.2-3.3 4.5 5.9" stroke="${stroke}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>`;const badge=detail==='toPdf'?`<path d="M22 11l4 4-4 4" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 15h9" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round"/>`:detail==='compress'?`<path d="M6 7V5.2h1.8M26 25v1.8h-1.8" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round"/><path d="M20.3 12.6l3 3-3 3M23.3 15.6h-5" stroke="${stroke}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>`:detail==='resize'?`<path d="M8 12V7h5M24 20v5h-5M20 8h5v5M12 24H7v-5" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`:'';return iconWrap(body+badge)}
+function toolIconSvg(id){
+const C={pdf:'#ef4444',img:'#ffb000',org:'#8a6bff',sec:'#db335a',edit:'#0c8f9d',ai:'#908bff',blue:'#1473e6',word:'#1682d9',excel:'#169c39',ppt:'#ff7a00'};
+const map={
+'compress-pdf':()=>docIcon('PDF',C.pdf,`<path d="M21 15.2l3 3-3 3" stroke="${C.pdf}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>`),
+'pdf-converter':()=>docIcon('PDF',C.pdf,`<path d="M10.5 15.5h11M13 12.5l-2.5 3 2.5 3M21.5 21.5h-11M19 18.5l2.5 3-2.5 3" stroke="${C.pdf}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>`),
+'pdf-ocr':()=>iconWrap(`<rect x="4.5" y="7" width="23" height="18" rx="2.5" fill="white"/><path d="M8.5 12h15M8.5 16h10M8.5 20h12" stroke="${C.pdf}" stroke-width="1.65" stroke-linecap="round"/><path d="M6.5 5v3M25.5 5v3M6.5 24v3M25.5 24v3" stroke="${C.pdf}" stroke-width="1.8" stroke-linecap="round"/>`),
+'jpg-to-pdf':()=>imageIcon(C.img,'toPdf'),
+'pdf-to-jpg':()=>docIcon('JPG',C.img,`<rect x="10" y="14" width="12" height="7.5" rx="1.2" stroke="${C.img}" stroke-width="1.5"/><circle cx="13.3" cy="17" r="1.1" fill="${C.img}"/><path d="M11.5 20.5l3-2.8 2.1 1.7 1.8-1.9 2.2 2.8" stroke="${C.img}" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>`),
+'pdf-to-png':()=>docIcon('PNG',C.img,`<rect x="9.5" y="14" width="13" height="8" rx="1.1" stroke="${C.img}" stroke-width="1.5"/><path d="M11 20v-4h2.2c2.2 0 2.2 3 0 3H11M16 20v-4h1.5c2.5 0 2.5 4 0 4H16M20.5 16h-2v4" stroke="${C.img}" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>`),
+'pdf-to-word':()=>docIcon('W',C.word), 'word-to-pdf':()=>docIcon('W',C.word,`<path d="M20.5 12.2v4.2h4.2" stroke="${C.word}" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>`),
+'pdf-to-excel':()=>docIcon('X',C.excel), 'excel-to-pdf':()=>docIcon('X',C.excel,`<path d="M21 13l-4.8 6m0-6 4.8 6" stroke="${C.excel}" stroke-width="1.6" stroke-linecap="round"/>`),
+'pdf-to-ppt':()=>docIcon('P',C.ppt), 'ppt-to-pdf':()=>docIcon('P',C.ppt,`<rect x="10" y="14" width="12" height="7" rx="1.2" stroke="${C.ppt}" stroke-width="1.5"/>`),
+'pdf-to-text':()=>docIcon('TXT',C.edit), 'txt-to-pdf':()=>docIcon('TXT',C.blue),
+'rtf-to-pdf':()=>docIcon('RTF',C.blue), 'odt-to-pdf':()=>docIcon('ODT',C.blue), 'ods-to-pdf':()=>docIcon('ODS',C.excel), 'odp-to-pdf':()=>docIcon('ODP',C.ppt), 'html-to-pdf':()=>docIcon('HTML',C.blue), 'epub-to-pdf':()=>docIcon('EPUB',C.blue), 'csv-to-pdf':()=>docIcon('CSV',C.excel), 'hwp-to-pdf':()=>docIcon('HWP',C.blue), 'zip-to-pdf':()=>docIcon('ZIP',C.blue),
+'merge-pdf':()=>iconWrap(`<rect x="5.5" y="6" width="11.5" height="17" rx="1.7" fill="white"/><rect x="14.5" y="9" width="12" height="17.5" rx="1.7" fill="white" opacity=".9"/><path d="M20.5 13v6M17.5 16h6" stroke="${C.org}" stroke-width="2" stroke-linecap="round"/>`),
+'split-pdf':()=>iconWrap(`<path d="M8 4.5h10.5L24 10v17.5H8z" fill="white"/><path d="M18.5 4.5V10H24" stroke="${C.org}" stroke-width="1.6"/><path d="M16 12v7.3M11.5 17.2l4.5 4.5 4.5-4.5" stroke="${C.org}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>`),
+'organize-pdf':()=>iconWrap(`<rect x="5" y="5" width="9.3" height="9.3" rx="1.5" fill="white"/><rect x="17.7" y="5" width="9.3" height="9.3" rx="1.5" fill="white" opacity=".94"/><rect x="5" y="17.7" width="9.3" height="9.3" rx="1.5" fill="white" opacity=".94"/><rect x="17.7" y="17.7" width="9.3" height="9.3" rx="1.5" fill="white" opacity=".88"/><path d="M12 7.8h5.8M9.6 14.5v3.4M20.8 14.5v3.2" stroke="${C.org}" stroke-width="1.5" stroke-linecap="round"/>`),
+'delete-pdf-pages':()=>iconWrap(`<path d="M8 7.5h16M12 7.5V5h8v2.5M10 10.5v14h12v-14" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 13.5v7M18 13.5v7" stroke="${C.org}" stroke-width="1.5" stroke-linecap="round"/>`),
+'extract-pdf-pages':()=>iconWrap(`<path d="M7.5 5h13l4 4v17h-17z" fill="white"/><path d="M20.5 5v4H25" stroke="${C.org}" stroke-width="1.5"/><path d="M10.5 14h10M10.5 18h7" stroke="${C.org}" stroke-width="1.7" stroke-linecap="round"/><path d="M18 21.5l3 3 3-3" stroke="${C.org}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>`),
+'rotate-pdf':()=>iconWrap(`<path d="M23.8 11.3A8.6 8.6 0 1 0 24 18" stroke="white" stroke-width="2" stroke-linecap="round"/><path d="M23.8 6.8v4.8H19" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 12h6v8h-6z" fill="white" opacity=".92"/>`),
+'protect-pdf':()=>iconWrap(`<path d="M16 4.5 24 8v6.8c0 5.4-3.1 9.5-8 12.7-4.9-3.2-8-7.3-8-12.7V8z" fill="white"/><rect x="11.5" y="14" width="9" height="7" rx="1.5" stroke="${C.sec}" stroke-width="1.7"/><path d="M13.5 14v-2a2.5 2.5 0 0 1 5 0v2" stroke="${C.sec}" stroke-width="1.7"/>`),
+'unlock-pdf':()=>iconWrap(`<path d="M16 4.5 24 8v6.8c0 5.4-3.1 9.5-8 12.7-4.9-3.2-8-7.3-8-12.7V8z" fill="white"/><rect x="11.5" y="14" width="9" height="7" rx="1.5" stroke="${C.sec}" stroke-width="1.7"/><path d="M13.5 14v-2a2.5 2.5 0 0 1 4.4-1.7" stroke="${C.sec}" stroke-width="1.7" stroke-linecap="round"/>`),
+'flatten-pdf':()=>docIcon('PDF',C.sec,`<path d="M12 14v5M16 12v7M20 14v5" stroke="${C.sec}" stroke-width="1.4" stroke-linecap="round"/><path d="M10 23h12" stroke="${C.sec}" stroke-width="1.5" stroke-linecap="round"/>`),
+'sign-pdf':()=>iconWrap(`<path d="M8 4.5h10.5L24 10v17.5H8z" fill="white"/><path d="M18.5 4.5V10H24" stroke="#d83cc9" stroke-width="1.6"/><path d="M10.5 21c2.4-1.3 3.2-4.6 5.4-4.6 2 0 .7 3.6 2.7 3.6 1.4 0 2.2-1.2 3-2.3" stroke="#d83cc9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`),
+'watermark-pdf':()=>iconWrap(`<path d="M6 8h20v16H6z" fill="white" opacity=".96"/><path d="M10 21 21 10" stroke="${C.edit}" stroke-width="2.2" stroke-linecap="round"/><path d="M11 18h10" stroke="${C.edit}" stroke-width="1.4" stroke-linecap="round"/>`),
+'number-pages':()=>docIcon('1',C.edit,`<path d="M11 23h10" stroke="${C.edit}" stroke-width="1.7" stroke-linecap="round"/>`),
+'crop-pdf':()=>iconWrap(`<path d="M9 5v15h15M5 9h15v14" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M11 11h10v10H11z" fill="white" opacity=".55"/>`),
+'redact-pdf':()=>iconWrap(`<rect x="6" y="6" width="20" height="20" rx="2" fill="white"/><path d="M9 11h14M9 15h10M9 19h8" stroke="${C.edit}" stroke-width="1.7" stroke-linecap="round"/><rect x="18.5" y="13" width="4.5" height="3.8" rx=".8" fill="${C.edit}"/>`),
+'edit-pdf':()=>iconWrap(`<path d="M7 5h13l5 5v17H7z" fill="white"/><path d="M20 5v5h5" stroke="${C.edit}" stroke-width="1.6"/><path d="M11 20h8M11 16h8M11 12h5" stroke="${C.edit}" stroke-width="1.7" stroke-linecap="round"/>`),
+'pdf-annotator':()=>iconWrap(`<path d="M7 5h13l5 5v17H7z" fill="white"/><path d="M20 5v5h5" stroke="${C.edit}" stroke-width="1.6"/><path d="m11 21 7-7 2 2-7 7-3 .8z" fill="${C.edit}"/><path d="M20.5 12.5l2 2" stroke="${C.edit}" stroke-width="1.6" stroke-linecap="round"/>`),
+'pdf-form-filler':()=>iconWrap(`<rect x="6" y="5" width="20" height="22" rx="2" fill="white"/><path d="M10 10h12M10 15h6M10 20h12" stroke="${C.edit}" stroke-width="1.7" stroke-linecap="round"/><rect x="18.5" y="13.2" width="3.5" height="3.5" rx=".7" stroke="${C.edit}" stroke-width="1.4"/>`),
+'pdf-reader':()=>iconWrap(`<path d="M7 5.5h13l5 5v17H7z" fill="white"/><path d="M20 5.5v5h5" stroke="${C.edit}" stroke-width="1.6"/><path d="M10 15h12M10 19h12M10 23h8" stroke="${C.edit}" stroke-width="1.7" stroke-linecap="round"/>`),
+'compress-image':()=>imageIcon(C.img,'compress'),'image-converter':()=>imageIcon(C.img,'convert'),'resize-image':()=>imageIcon(C.img,'resize'), 'images-to-pdf':()=>imageIcon(C.img,'toPdf'),
+'pdf-scanner':()=>iconWrap(`<rect x="5" y="6" width="22" height="20" rx="2.5" fill="white"/><path d="M8.5 10h15M8.5 14h10M8.5 18h13" stroke="#8f8bff" stroke-width="1.65" stroke-linecap="round"/><path d="M5 9V6h3M27 23v3h-3" stroke="#8f8bff" stroke-width="1.8" stroke-linecap="round"/>`),
+'pdf-to-webp':()=>docIcon('WEBP',C.img), 'pdf-thumbnails':()=>iconWrap(`<rect x="5" y="5" width="9.5" height="9.5" rx="1.4" fill="white"/><rect x="17.5" y="5" width="9.5" height="9.5" rx="1.4" fill="white" opacity=".92"/><rect x="5" y="17.5" width="9.5" height="9.5" rx="1.4" fill="white" opacity=".9"/><rect x="17.5" y="17.5" width="9.5" height="9.5" rx="1.4" fill="white" opacity=".86"/><path d="M7.5 12l2-2 2.5 2.5" stroke="${C.org}" stroke-width="1.25" stroke-linecap="round"/>`),
+'ai-pdf-assistant':()=>iconWrap(`<rect x="5" y="5" width="22" height="22" rx="4" fill="white"/><text x="16" y="19.5" text-anchor="middle" font-size="10" font-weight="900" font-family="Lato, Arial, sans-serif" fill="${C.ai}">AI</text><path d="M8 9h4M20 9h4M8 23h4M20 23h4" stroke="${C.ai}" stroke-width="1.5" stroke-linecap="round"/>`),
+'chat-with-pdf':()=>iconWrap(`<rect x="5" y="6" width="22" height="19" rx="3" fill="white"/><path d="M9 11h14M9 15h10M9 19h7" stroke="${C.ai}" stroke-width="1.7" stroke-linecap="round"/><path d="M11 25v2l3-2" fill="white" stroke="${C.ai}" stroke-width="1.4" stroke-linejoin="round"/>`),
+'ai-pdf-summarizer':()=>iconWrap(`<rect x="6" y="5" width="20" height="22" rx="2.5" fill="white"/><path d="M10 11h12M10 15h12M10 19h8" stroke="${C.ai}" stroke-width="1.7" stroke-linecap="round"/><path d="M22 22l2 2M24 22l-2 2" stroke="${C.ai}" stroke-width="1.5" stroke-linecap="round"/>`),
+'ai-question-generator':()=>iconWrap(`<rect x="6" y="5" width="20" height="22" rx="2.5" fill="white"/><circle cx="16" cy="14" r="4" stroke="${C.ai}" stroke-width="1.7"/><path d="M14.7 15.5c.5.5 1.1.8 1.8.8 1.1 0 1.8-.6 1.8-1.5 0-1.4-2.7-1.2-2.7-2.8 0-.8.6-1.4 1.5-1.4" stroke="${C.ai}" stroke-width="1.4" stroke-linecap="round"/><path d="M12 22h8" stroke="${C.ai}" stroke-width="1.5" stroke-linecap="round"/>`),
+'translate-pdf':()=>iconWrap(`<rect x="5" y="5" width="22" height="22" rx="3" fill="white"/><text x="11.3" y="17.5" text-anchor="middle" font-size="8.5" font-weight="900" font-family="Lato, Arial, sans-serif" fill="${C.ai}">A</text><text x="20.6" y="17.5" text-anchor="middle" font-size="8.5" font-weight="900" font-family="Lato, Arial, sans-serif" fill="${C.ai}">文</text><path d="M15.5 12.5h1.5M15.5 21h1.5" stroke="${C.ai}" stroke-width="1.4" stroke-linecap="round"/>`),
+'pdf-to-pdfa':()=>docIcon('PDF/A',C.pdf,`<path d="M20.5 18h3" stroke="${C.pdf}" stroke-width="1.5" stroke-linecap="round"/>`),
+'job-history':()=>iconWrap(`<circle cx="16" cy="16" r="10" stroke="white" stroke-width="2"/><path d="M16 10v6l4 2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 7l-2 1.5L7 11" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`),
+};
+return map[id]?map[id]():docIcon('PDF',C.blue);
+}
+function featureSvg(kind){const A='#1473e6';const M='#0c8f9d';const P='#8a6bff';const G='#1f9d61';return {jobs:iconWrap(`<rect x="5" y="5" width="22" height="22" rx="4" fill="white"/><path d="M9 11h14M9 16h10M9 21h7" stroke="${A}" stroke-width="1.8" stroke-linecap="round"/><circle cx="23" cy="21" r="2" fill="${G}"/>`),tools:iconWrap(`<rect x="5" y="5" width="9" height="9" rx="2" fill="white"/><rect x="18" y="5" width="9" height="9" rx="2" fill="white" opacity=".92"/><rect x="5" y="18" width="9" height="9" rx="2" fill="white" opacity=".92"/><rect x="18" y="18" width="9" height="9" rx="2" fill="white" opacity=".86"/><path d="M14 9.5h4M9.5 14v4M22.5 14v4M14 22.5h4" stroke="${P}" stroke-width="1.5" stroke-linecap="round"/>`),organizer:iconWrap(`<rect x="5" y="5" width="8" height="10" rx="1.3" fill="white"/><rect x="15" y="5" width="8" height="10" rx="1.3" fill="white" opacity=".92"/><rect x="5" y="17" width="8" height="10" rx="1.3" fill="white" opacity=".9"/><path d="M16 19h8M20 17v8" stroke="${P}" stroke-width="1.4" stroke-linecap="round"/>`),stats:iconWrap(`<rect x="5" y="6" width="22" height="20" rx="2.5" fill="white"/><path d="M9 22v-5M14 22v-9M19 22v-7M24 22v-12" stroke="${A}" stroke-width="2" stroke-linecap="round"/>`),images:iconWrap(`<rect x="5" y="5" width="22" height="22" rx="3" fill="white"/><circle cx="11" cy="11" r="2" fill="${A}"/><path d="M7.5 23l5.5-6 4 3 3-4 4.5 7" stroke="${A}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>`),ocr:iconWrap(`<rect x="5" y="7" width="22" height="18" rx="2.5" fill="white"/><path d="M9 12h14M9 16h10M9 20h12" stroke="${M}" stroke-width="1.7" stroke-linecap="round"/><path d="M7 5v3M25 5v3M7 24v3M25 24v3" stroke="${M}" stroke-width="1.8" stroke-linecap="round"/>`),office:docIcon('W',A),edit:iconWrap(`<path d="M7 5h13l5 5v17H7z" fill="white"/><path d="M20 5v5h5" stroke="${M}" stroke-width="1.6"/><path d="M10 21l8-8 3 3-8 8-3 .7z" fill="${M}"/>`) }[kind]||docIcon('PDF',A)}
+function iconSvg(id){return toolIconSvg(id)}
+function card(t){const icon=iconSvg(t.id)||`<span class="badge-text">${t.i}</span>`;return `<button class="tool-card" data-tool="${t.id}"><span class="tool-icon" style="background:${t.col||iconColors[t.c]||'#1473e6'}">${icon}</span><span class="tool-main"><h3>${t.n}</h3><p>${t.d}</p></span><span class="arrow">›</span></button>`}
+function renderPopular(){ $('popularGrid').innerHTML=popularIds.map(id=>card(tools.find(t=>t.id===id))).join('') }
+function renderAI(){ $('aiGrid').innerHTML=aiIds.map(id=>card(tools.find(t=>t.id===id))).join('') }
+function renderFilters(){const cats=['All','PDF','Images','Documents','Edit','Organize','Security','AI','Utilities'];$('filters').innerHTML=cats.map((c,i)=>`<button class="filter-btn ${i===0?'active':''}" data-filter="${c}">${c}</button>`).join('');$('filters').addEventListener('click',e=>{const b=e.target.closest('[data-filter]');if(!b)return;document.querySelectorAll('.filter-btn').forEach(x=>x.classList.remove('active'));b.classList.add('active');renderTools(b.dataset.filter,$('toolSearch').value)})}
+function renderTools(filter='All',query=''){let q=query.trim().toLowerCase();let arr=tools.filter(t=>(filter==='All'||t.c===filter)&&(!q||(t.n+' '+t.d+' '+t.c).toLowerCase().includes(q)));$('toolsGrid').innerHTML=arr.map(card).join('');$('toolCount').textContent=`${arr.length} tools`;document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>openTool(b.dataset.tool))}
+function buildMenu(){let groups={PDF:tools.filter(t=>t.c==='PDF').slice(0,8),Images:tools.filter(t=>t.c==='Images').slice(0,5),Documents:tools.filter(t=>t.c==='Documents').slice(0,7),AI:tools.filter(t=>t.c==='AI').slice(0,5)};$('toolsMenu').innerHTML=Object.entries(groups).map(([k,v])=>`<div class="dropgroup"><h4>${k}</h4>${v.map(t=>`<a href="#" data-menu-tool="${t.id}">${t.n}</a>`).join('')}</div>`).join('');$('toolsMenu').querySelectorAll('[data-menu-tool]').forEach(a=>a.onclick=e=>{e.preventDefault();$('toolsMenu').classList.remove('show');openTool(a.dataset.menuTool)})}
+function resetModal(){selectedFiles=[];currentJob=null;organizerPages=[];organizerSelected=null;$('fileInput').value='';$('fileList').innerHTML='';$('options').innerHTML='';$('notice').className='notice';$('notice').textContent='';$('progress').classList.remove('show');$('resultBox').classList.remove('show');$('organizer').classList.remove('show');$('runBtn').disabled=false;$('runBtn').textContent='Process files';$('dropTitle').textContent='Drop files here';$('dropHint').textContent='or browse from your device'}
+function defaultAccept(t){if(['compress-image','image-converter','resize-image','images-to-pdf','jpg-to-pdf','pdf-scanner'].includes(t))return'.jpg,.jpeg,.png,.webp,.bmp,.gif,.tif,.tiff';if(t==='merge-pdf')return'.pdf';if(t==='organize-pdf'||t.startsWith('pdf')||t.includes('pdf'))return'.pdf';return'.pdf,.jpg,.jpeg,.png,.webp,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.rtf,.odt,.ods,.odp,.csv,.html,.epub,.hwp,.zip'}
+function setOptions(tool){let h='';
+if(['compress-image','image-converter','resize-image'].includes(tool))h+=`<div class="field"><label>Quality <span id="qVal">80</span></label><input id="quality" type="range" min="10" max="100" value="80" class="range"></div>`;
+if(['compress-image','resize-image'].includes(tool))h+=`<div class="field"><label>Max / target width</label><input id="width" type="number" min="1" max="10000" placeholder="e.g. 2400"></div><div class="field"><label>Max / target height</label><input id="height" type="number" min="1" max="10000" placeholder="e.g. 1600"></div>`;
+if(tool==='resize-image')h+=`<div class="field"><label>Fit mode</label><select id="fit"><option value="contain">Contain</option><option value="cover">Cover</option><option value="exact">Exact</option></select></div>`;
+if(tool==='image-converter')h+=`<div class="field"><label>Output format</label><select id="output_format"><option>png</option><option>jpg</option><option>webp</option><option>bmp</option><option>tiff</option></select></div>`;
+if(['pdf-to-jpg','pdf-to-png','pdf-to-webp','pdf-ocr','images-to-pdf','jpg-to-pdf','pdf-scanner'].includes(tool))h+=`<div class="field"><label>Render DPI</label><input id="dpi" type="number" min="72" max="600" value="150"></div>`;
+if(['split-pdf','delete-pdf-pages','extract-pdf-pages','rotate-pdf'].includes(tool))h+=`<div class="field full"><label>Pages</label><input id="pages" placeholder="e.g. 1,3,5-7"></div>`;
+if(tool==='organize-pdf')h+=`<div class="field full"><label>Page order</label><input id="orderText" placeholder="Auto-filled from visual order"></div>`;
+if(tool==='rotate-pdf')h+=`<div class="field"><label>Angle</label><select id="angle"><option>90</option><option>180</option><option>270</option></select></div>`;
+if(tool==='merge-pdf')h+=`<div class="field full"><label>Tip</label><div style="background:var(--soft);border:1px solid var(--line2);border-radius:8px;padding:10px;color:var(--muted);font-size:12px">Add 2+ PDFs. Drag the file rows to set merge order.</div></div>`;
+if(['jpg-to-pdf','images-to-pdf'].includes(tool))h+=`<div class="field"><label>Page size</label><select id="page_size"><option value="auto">Auto</option><option value="a4">A4</option></select></div><div class="field"><label>Margin (pt)</label><input id="margin" type="number" min="0" value="0"></div>`;
+if(tool==='watermark-pdf')h+=`<div class="field full"><label>Watermark text</label><input id="watermark" value="CONFIDENTIAL"></div><div class="field"><label>Opacity</label><input id="opacity" type="number" min="0.05" max="1" step="0.05" value="0.18"></div>`;
+if(tool==='number-pages')h+=`<div class="field"><label>Start number</label><input id="start_number" type="number" value="1"></div><div class="field"><label>Position</label><select id="position"><option>bottom-center</option><option>bottom-left</option><option>bottom-right</option><option>top-center</option></select></div>`;
+if(tool==='protect-pdf'||tool==='unlock-pdf')h+=`<div class="field full"><label>PDF password</label><input id="password" type="password" placeholder="Enter password"></div>`;
+if(['chat-with-pdf'].includes(tool))h+=`<div class="field full"><label>Your question</label><textarea id="question" placeholder="What is this document about?"></textarea></div>`;
+if(['edit-pdf','pdf-annotator'].includes(tool))h+=`<div class="field"><label>Page number</label><input id="edit_page" type="number" min="1" value="1"></div><div class="field"><label>Annotation type</label><select id="edit_type"><option value="text">Text note</option><option value="highlight">Highlight</option></select></div><div class="field"><label>X position</label><input id="edit_x" type="number" value="60"></div><div class="field"><label>Y position</label><input id="edit_y" type="number" value="60"></div><div class="field full"><label>Text</label><textarea id="edit_text" placeholder="Add a note or highlight text…"></textarea></div>`;
+if(tool==='translate-pdf')h+=`<div class="field"><label>Target language</label><input id="target_language" value="English"></div>`;
+if(tool==='redact-pdf')h+=`<div class="field full"><label>Redaction rectangle (PDF points)</label><input id="rect_json" placeholder='[{"page":1,"x0":60,"y0":60,"x1":220,"y1":90}]'></div>`;
+if(tool==='ai-pdf-summarizer'||tool==='ai-question-generator')h+=`<div class="field"><label>Count</label><input id="count" type="number" min="1" max="20" value="6"></div>`;
+if(tool==='sign-pdf')h+=`<div class="field full"><label>Signature text</label><input id="signature" value="Signed"></div>`;
+if(tool==='pdf-scanner')h+=`<div class="field"><label>Grayscale</label><select id="grayscale"><option>true</option><option>false</option></select></div><div class="field"><label>Contrast</label><input id="contrast" type="number" min="0.2" max="3" step="0.05" value="1.15"></div>`;
+$('options').innerHTML=h;if($('quality'))$('quality').oninput=()=>$('qVal').textContent=$('quality').value}
+function openTool(id){selectedTool=tools.find(t=>t.id===id);if(!selectedTool)return;resetModal();$('modalTitle').textContent=selectedTool.n;$('fileInput').setAttribute('accept',defaultAccept(id));$('fileInput').multiple=!['compress-pdf','pdf-ocr','pdf-to-jpg','pdf-to-png','pdf-to-webp','pdf-to-word','pdf-to-excel','pdf-to-ppt','pdf-to-text','pdf-to-pdfa','pdf-reader','rotate-pdf','watermark-pdf','number-pages','crop-pdf','redact-pdf','edit-pdf','pdf-annotator','pdf-form-filler','sign-pdf','protect-pdf','unlock-pdf','flatten-pdf','pdf-thumbnails','ai-pdf-assistant','chat-with-pdf','ai-pdf-summarizer','ai-question-generator','translate-pdf','pdf-converter'].includes(id);setOptions(id);$('runBtn').style.display='inline-block';$('toolModal').classList.add('show');$('toolModal').setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
+function closeModal(){clearInterval(pollTimer);$('toolModal').classList.remove('show');$('toolModal').setAttribute('aria-hidden','true');document.body.style.overflow=''}
+function renderFiles(){const list=$('fileList');list.innerHTML=selectedFiles.map((f,i)=>`<div class="file-row" draggable="true" data-file-index="${i}"><span style="width:28px;text-align:center">${f.name.toLowerCase().endsWith('.pdf')?'📄':'🖼️'}</span><span class="name">${f.name}</span><small>${bytes(f.size)}</small><button class="remove" data-remove="${i}" aria-label="Remove">×</button></div>`).join('');list.querySelectorAll('[data-remove]').forEach(b=>b.onclick=()=>{selectedFiles.splice(+b.dataset.remove,1);renderFiles()});if(selectedTool?.id==='organize-pdf'&&selectedFiles[0])prepareOrganizer(selectedFiles[0])}
+function addFiles(fs){for(const f of fs){if(f.size>250*1024*1024){showNotice('One file is above the 250 MB server limit.','error');continue}selectedFiles.push(f)}renderFiles();$('dropTitle').textContent=`${selectedFiles.length} file${selectedFiles.length===1?'':'s'} ready`;if(selectedTool?.id==='organize-pdf'&&selectedFiles.length)prepareOrganizer(selectedFiles[0])}
+async function prepareOrganizer(file){if(!window.pdfjsLib){showNotice('Visual PDF preview library is unavailable. The backend organizer is still available.','info');return}$('organizer').classList.add('show');const order=[];try{const buf=await file.arrayBuffer();const pdf=await pdfjsLib.getDocument({data:buf}).promise;$('organizerPages').innerHTML='';for(let i=1;i<=pdf.numPages;i++){const page=await pdf.getPage(i);const vp=page.getViewport({scale:.45});const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;const div=document.createElement('div');div.className='org-card';div.draggable=true;div.dataset.page=i;div.innerHTML=`<img alt="Page ${i}" src="${c.toDataURL('image/jpeg',.82)}"><div><span>Page ${i}</span><span>↕</span></div>`;$('organizerPages').appendChild(div);order.push(i);div.addEventListener('click',()=>{document.querySelectorAll('.org-card').forEach(x=>x.style.outline='');div.style.outline='2px solid var(--blue)';organizerSelected=div});div.addEventListener('dragstart',()=>div.classList.add('dragging'));div.addEventListener('dragend',()=>div.classList.remove('dragging'))}setupOrganizerDnD();organizerPages=order.slice();$('orderText').value=order.join(',');}catch(err){showNotice('Could not preview the PDF in the browser. You can still process it normally.','error')}}
+function setupOrganizerDnD(){const box=$('organizerPages');box.ondragover=e=>{e.preventDefault();const dragging=box.querySelector('.dragging');if(!dragging)return;const after=[...box.querySelectorAll('.org-card:not(.dragging)')].find(el=>e.clientY<=el.getBoundingClientRect().top+el.getBoundingClientRect().height/2);if(after)box.insertBefore(dragging,after);else box.appendChild(dragging);updateOrderInput()};}
+function updateOrderInput(){const vals=[...$('organizerPages').children].map(x=>Number(x.dataset.page));organizerPages=vals;if($('orderText'))$('orderText').value=vals.join(',')}
+function collectOptions(){let o={};document.querySelectorAll('#options input,#options select,#options textarea').forEach(el=>{if(!el.id)return;let v=el.value;if(el.id==='pages')o.pages=parsePages(v);else if(el.id==='orderText')o.order=parsePages(v);else if(el.id==='rect_json'){try{o.rects=JSON.parse(v||'[]')}catch(e){o.rects=[]}}else if(el.id==='edit_page'||el.id==='edit_x'||el.id==='edit_y'){o[el.id]=Number(v||0)}else if(['quality','width','height','dpi','margin','angle','opacity','start_number','count','contrast'].includes(el.id))o[el.id]=v===''?undefined:Number(v);else o[el.id]=v});if(selectedTool?.id==='organize-pdf'){o.order=[...$('organizerPages').children].map(x=>Number(x.dataset.page));o.rotations=selectedRotations()}if(['edit-pdf','pdf-annotator'].includes(selectedTool?.id)){o.notes=[{page:o.edit_page||1,type:o.edit_type||'text',x:o.edit_x||60,y:o.edit_y||60,text:o.edit_text||'Annotation'}];delete o.edit_page;delete o.edit_type;delete o.edit_x;delete o.edit_y;delete o.edit_text}return o}
+function parsePages(v){return (v||'').split(',').flatMap(t=>{t=t.trim();if(!t)return[];if(t.includes('-')){let [a,b]=t.split('-').map(Number);let r=[];for(let i=a;i<=b;i++)r.push(i);return r}return [Number(t)]}).filter(n=>Number.isInteger(n)&&n>0)}
+function showNotice(msg,type='info'){$('notice').className=`notice show ${type}`;$('notice').textContent=msg}
+async function runJob(){if(!selectedTool)return;if(!selectedFiles.length){showNotice('Add at least one file first.','error');return}if(selectedTool.id==='organize-pdf'&&organizerPages.length)updateOrderInput();$('runBtn').disabled=true;$('runBtn').textContent='Starting…';$('progress').classList.add('show');$('resultBox').classList.remove('show');$('progressFill').style.width='2%';$('progressPct').textContent='2%';$('progressStage').textContent='Uploading';const form=new FormData();form.append('tool_id',selectedTool.id);selectedFiles.forEach(f=>form.append('files',f,f.name));form.append('options',JSON.stringify(collectOptions()));try{const res=await fetch(API+'/api/jobs',{method:'POST',body:form});const data=await res.json();if(!res.ok)throw new Error(data.detail||'Could not start job');currentJob=data.job_id;pollTimer=setInterval(pollJob,350)}catch(err){showNotice(err.message,'error');$('runBtn').disabled=false;$('runBtn').textContent='Process files';$('progress').classList.remove('show')}}
+async function pollJob(){if(!currentJob)return;try{const res=await fetch(API+'/api/jobs/'+currentJob);const data=await res.json();if(!res.ok)throw new Error(data.detail||'Job not found');let pct=Number(data.progress||0);$('progressFill').style.width=pct+'%';$('progressPct').textContent=pct+'%';$('progressStage').textContent=data.stage||data.status;$('progressStatus').textContent=data.error||data.stage||'';if(data.status==='completed'){clearInterval(pollTimer);showResults(data);$('runBtn').disabled=false;$('runBtn').textContent='Process again';toast('Job completed');}else if(data.status==='error'){clearInterval(pollTimer);showNotice(data.error||'Processing failed.','error');$('runBtn').disabled=false;$('runBtn').textContent='Try again';toast('Job failed')}}catch(err){clearInterval(pollTimer);showNotice(err.message,'error');$('runBtn').disabled=false;$('runBtn').textContent='Try again'}}
+function showResults(data){$('resultBox').classList.add('show');const original=data.original_bytes||0,total=data.total_output_bytes||0,saved=data.compression_savings_percent;const stats=[];stats.push(`<div class="stat"><b>${bytes(original)}</b><span>Original</span></div>`);stats.push(`<div class="stat"><b>${bytes(total)}</b><span>Output</span></div>`);stats.push(`<div class="stat"><b>${saved!=null?saved+'%':'—'}</b><span>${saved!=null?'Smaller':'Savings'}</span></div>`);$('stats').innerHTML=stats.join('');$('resultList').innerHTML=(data.files||[]).map(f=>`<div class="result-item"><span>📎</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${f.name}</span><small>${bytes(f.size)}</small><a href="${f.url}" download>Download</a></div>`).join('')||'<div class="result-item">No downloadable files were produced.</div>'}
+function bindUpload(){const dz=$('dropzone'),inp=$('fileInput');$('pickBtn').onclick=()=>inp.click();inp.onchange=()=>addFiles([...inp.files]);['dragenter','dragover'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.add('drag')}));['dragleave','drop'].forEach(e=>dz.addEventListener(e,ev=>{ev.preventDefault();dz.classList.remove('drag')}));dz.addEventListener('drop',ev=>addFiles([...ev.dataTransfer.files]));}
+function boot(){document.querySelectorAll('[data-feature-icon]').forEach(el=>{el.innerHTML=featureSvg(el.dataset.featureIcon)});renderPopular();renderAI();renderFilters();renderTools();buildMenu();bindUpload();document.body.addEventListener('click',e=>{const b=e.target.closest('[data-tool]');if(b&&b.closest('.tool-card,.workspace-side'))openTool(b.dataset.tool)});$('toolSearch').oninput=e=>renderTools(document.querySelector('.filter-btn.active')?.dataset.filter||'All',e.target.value);$('openSearch').onclick=()=>{document.getElementById('toolSearch').focus();document.getElementById('tools').scrollIntoView({behavior:'smooth'})};$('heroUpload').onclick=()=>openTool('compress-pdf');$('heroUpload2').onclick=()=>openTool('compress-pdf');$('toolsMenuBtn').onclick=e=>{$('toolsMenu').classList.toggle('show');e.stopPropagation()};document.addEventListener('click',e=>{if(!e.target.closest('.topbar'))$('toolsMenu').classList.remove('show')});$('modalClose').onclick=closeModal;$('cancelBtn').onclick=closeModal;$('runBtn').onclick=runJob;$('applyOrderBtn').onclick=updateOrderInput;$('rotatePageBtn').onclick=()=>{if(!organizerSelected){showNotice('Select a page first.','info');return}organizerSelected.dataset.rotate=String((Number(organizerSelected.dataset.rotate)||0)+90);organizerSelected.style.transform=`rotate(${organizerSelected.dataset.rotate}deg)`;showNotice(`Page ${organizerSelected.dataset.page} will rotate ${Number(organizerSelected.dataset.rotate)%360}° on export.`,'info');};$('deletePageBtn').onclick=()=>{if(!organizerSelected){showNotice('Select a page first.','info');return}organizerSelected.remove();organizerSelected=null;updateOrderInput()};$('mobileMenu').onclick=()=>{document.querySelector('.navlinks').style.display=document.querySelector('.navlinks').style.display==='flex'?'none':'flex'};window.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()})}
+
+/* Dedicated tool interface: one polished page template for every tool */
+let tpFiles=[], tpJob=null, tpPoll=null;
+const toolPage = {
+  open(id){
+    const t=tools.find(x=>x.id===id); if(!t)return;
+    selectedTool=t;
+    this.reset();
+    this.decorate(t);
+    document.body.classList.add('tool-open');
+    $('toolPage').setAttribute('aria-hidden','false');
+    document.title=`${t.n} — PaperPilot`;
+    const hash=`#tool/${id}`;
+    if(location.hash!==hash) history.pushState({tool:id},'',hash);
+    window.scrollTo({top:0,behavior:'auto'});
+  },
+  close(push=true){
+    clearInterval(tpPoll); tpPoll=null; tpJob=null;
+    document.body.classList.remove('tool-open');
+    $('toolPage').setAttribute('aria-hidden','true');
+    document.title='PaperPilot — PDF, Image & Document Tools';
+    if(push && location.hash) history.pushState({},'',location.pathname+location.search);
+    window.scrollTo({top:0,behavior:'smooth'});
+  },
+  reset(){
+    tpFiles=[];tpJob=null;clearInterval(tpPoll);tpPoll=null;
+    $('tpFilesPanel').classList.remove('show');$('tpFilesList').innerHTML='';
+    $('tpProgress').classList.remove('show');$('tpResult').classList.remove('show');
+    $('tpProgressFill').style.width='0%';$('tpProgressPct').textContent='0%';
+    $('tpProgressStage').textContent='Ready';$('tpProgressStatus').textContent='Preparing your files…';
+    $('tpRunBtn').disabled=false;$('tpRunBtn').textContent='Process files';
+    $('tpFileInput').value='';$('tpOptions').innerHTML='';$('tpStats').innerHTML='';$('tpDownloads').innerHTML='';
+  },
+  decorate(t){
+    const color=t.col||iconColors[t.c]||'#1473e6';
+    $('toolPage').style.setProperty('--tool-accent',color);
+    $('toolPage').style.setProperty('--tool-tint',hexToRgba(color,.075));
+    $('toolPage').style.setProperty('--tool-line',hexToRgba(color,.28));
+    $('tpIconWrap').style.background=color;
+    $('tpIconWrap').innerHTML=iconSvg(t.id);
+    $('tpUploadIcon').style.background=color;
+    $('tpUploadIcon').innerHTML=iconSvg(t.id);
+    $('tpSideDot').style.background=color;
+    $('tpBreadcrumb').textContent=t.n;
+    $('tpTitle').textContent=titleFor(t);
+    $('tpLead').textContent=leadFor(t);
+    $('tpDropTitle').textContent=dropTitleFor(t);
+    $('tpDropHint').textContent=`${acceptLabel(t.id)} supported • drag and drop or browse`;
+    $('tpUploadNote').textContent=noteFor(t);
+    $('tpFileInput').setAttribute('accept',defaultAccept(t.id));
+    $('tpFileInput').multiple=!['compress-pdf','pdf-ocr','pdf-to-jpg','pdf-to-png','pdf-to-webp','pdf-to-word','pdf-to-excel','pdf-to-ppt','pdf-to-text','pdf-to-pdfa','pdf-reader','rotate-pdf','watermark-pdf','number-pages','crop-pdf','redact-pdf','edit-pdf','pdf-annotator','pdf-form-filler','sign-pdf','protect-pdf','unlock-pdf','flatten-pdf','pdf-thumbnails','ai-pdf-assistant','chat-with-pdf','ai-pdf-summarizer','ai-question-generator','translate-pdf','pdf-converter'].includes(t.id);
+    setPageOptions(t.id);
+    renderRelated(t.id);
+  },
+  renderFiles(){
+    $('tpFilesCount').textContent=`${tpFiles.length} file${tpFiles.length===1?'':'s'}`;
+    $('tpFilesList').innerHTML=tpFiles.map((f,i)=>{
+      const isPdf=f.name.toLowerCase().endsWith('.pdf'), c=selectedTool.col||iconColors[selectedTool.c]||'#1473e6';
+      return `<div class="tp-file-row"><span class="tp-file-kind" style="background:${c}">${isPdf?'PDF':f.name.split('.').pop().toUpperCase().slice(0,4)}</span><span class="tp-name">${escapeHtml(f.name)}</span><small>${bytes(f.size)}</small><button type="button" data-tp-remove="${i}" aria-label="Remove">×</button></div>`;
+    }).join('');
+    $('tpFilesPanel').classList.toggle('show',tpFiles.length>0);
+    $('tpFilesList').querySelectorAll('[data-tp-remove]').forEach(b=>b.onclick=()=>{tpFiles.splice(Number(b.dataset.tpRemove),1);this.renderFiles();});
+  },
+  addFiles(fs){
+    for(const f of fs){
+      if(f.size>250*1024*1024){toast('One file is above the 250 MB limit');continue}
+      tpFiles.push(f);
+    }
+    this.renderFiles();
+    $('tpRunBtn').disabled=tpFiles.length===0;
+  },
+  collectOptions(){
+    const o={};
+    $('tpOptions').querySelectorAll('input,select,textarea').forEach(el=>{
+      if(!el.id)return;
+      const id=el.id.replace(/^tp-/,'');
+      let v=el.value;
+      if(id==='pages'||id==='orderText')o[id==='orderText'?'order':'pages']=parsePages(v);
+      else if(id==='rect_json'){try{o.rects=JSON.parse(v||'[]')}catch{o.rects=[]}}
+      else if(['quality','width','height','dpi','margin','angle','opacity','start_number','count','contrast','edit_page','edit_x','edit_y'].includes(id))o[id]=v===''?undefined:Number(v);
+      else o[id]=v;
+    });
+    if(selectedTool?.id==='organize-pdf')o.order=[...document.querySelectorAll('#tpFilesList .tp-file-row')].map((_,i)=>i+1);
+    if(['edit-pdf','pdf-annotator'].includes(selectedTool?.id)){
+      o.notes=[{page:o.edit_page||1,type:o.edit_type||'text',x:o.edit_x||60,y:o.edit_y||60,text:o.edit_text||'Annotation'}];
+      delete o.edit_page;delete o.edit_type;delete o.edit_x;delete o.edit_y;delete o.edit_text;
+    }
+    return o;
+  },
+  async run(){
+    if(!selectedTool)return;
+    if(!tpFiles.length){showTpNotice('Choose at least one file first.');return}
+    $('tpRunBtn').disabled=true;$('tpRunBtn').textContent='Starting…';
+    $('tpProgress').classList.add('show');$('tpProgressFill').style.width='4%';$('tpProgressPct').textContent='4%';$('tpProgressStage').textContent='Uploading';
+    const form=new FormData();form.append('tool_id',selectedTool.id);tpFiles.forEach(f=>form.append('files',f,f.name));form.append('options',JSON.stringify(this.collectOptions()));
+    try{
+      const res=await fetch(API+'/api/jobs',{method:'POST',body:form});const data=await res.json();if(!res.ok)throw new Error(data.detail||'Could not start the job');
+      tpJob=data.job_id;tpPoll=setInterval(()=>this.poll(),320);
+    }catch(err){showTpNotice(err.message);$('tpRunBtn').disabled=false;$('tpRunBtn').textContent='Process files';}
+  },
+  async poll(){
+    if(!tpJob)return;
+    try{
+      const res=await fetch(API+'/api/jobs/'+tpJob);const d=await res.json();if(!res.ok)throw new Error(d.detail||'Job not found');
+      const pct=Math.max(0,Math.min(100,Number(d.progress||0)));
+      $('tpProgressFill').style.width=pct+'%';$('tpProgressPct').textContent=pct+'%';$('tpProgressStage').textContent=d.stage||d.status;$('tpProgressStatus').textContent=d.error||d.stage||'Processing…';
+      if(d.status==='completed'){clearInterval(tpPoll);tpPoll=null;this.showResult(d);$('tpRunBtn').disabled=false;$('tpRunBtn').textContent='Process again';toast('Job completed');}
+      if(d.status==='error'){clearInterval(tpPoll);tpPoll=null;showTpNotice(d.error||'Processing failed');$('tpRunBtn').disabled=false;$('tpRunBtn').textContent='Try again';}
+    }catch(err){clearInterval(tpPoll);tpPoll=null;showTpNotice(err.message);$('tpRunBtn').disabled=false;$('tpRunBtn').textContent='Try again';}
+  },
+  showResult(d){
+    $('tpResult').classList.add('show');
+    const original=d.original_bytes||0,total=d.total_output_bytes||0,saved=d.compression_savings_percent;
+    $('tpStats').innerHTML=[
+      `<div class="tp-stat"><b>${bytes(original)}</b><span>Original</span></div>`,
+      `<div class="tp-stat"><b>${bytes(total)}</b><span>Output</span></div>`,
+      `<div class="tp-stat"><b>${saved!=null?saved+'%':'—'}</b><span>${saved!=null?'Smaller':'Savings'}</span></div>`
+    ].join('');
+    $('tpDownloads').innerHTML=(d.files||[]).map(f=>`<div class="tp-download"><span style="color:var(--tool-accent)">●</span><span class="tp-download-name">${escapeHtml(f.name)}</span><span class="tp-download-size">${bytes(f.size)}</span><a href="${f.url}" download>Download</a></div>`).join('')||'<div class="tp-download">No downloadable files were produced.</div>';
+    $('tpResultTitle').textContent=d.message||'Your files are ready.';
+    $('tpResultCopy').textContent=saved!=null?`${saved}% smaller output delivered.`:'Processing finished successfully.';
+    $('tpResult').scrollIntoView({behavior:'smooth',block:'center'});
+  }
+};
+function hexToRgba(hex,a){const h=hex.replace('#','');const n=parseInt(h.length===3?h.split('').map(x=>x+x).join(''):h,16);return `rgba(${(n>>16)&255},${(n>>8)&255},${n&255},${a})`}
+function escapeHtml(v){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function acceptLabel(id){if(['compress-image','image-converter','resize-image','images-to-pdf','jpg-to-pdf','pdf-scanner'].includes(id))return'JPG, PNG, WEBP, BMP, TIFF';if(id==='merge-pdf'||id==='organize-pdf'||id.startsWith('pdf'))return'PDF';return'PDF, images, office and document files'}
+function titleFor(t){if(t.id==='compress-pdf')return'Compress PDF for free';if(t.id==='word-to-pdf')return'Word to PDF converter';if(t.id==='excel-to-pdf')return'Excel to PDF converter';if(t.id==='jpg-to-pdf')return'JPG to PDF converter';if(t.id==='pdf-to-jpg')return'PDF to JPG converter';if(t.id==='pdf-to-png')return'PDF to PNG converter';if(t.id==='merge-pdf')return'Merge PDF files';if(t.id==='split-pdf')return'Split PDF files';if(t.id==='pdf-ocr')return'PDF OCR online';return t.n}
+function leadFor(t){return `${t.d} Fast, focused and designed to keep the controls you need right where you expect them.`}
+function dropTitleFor(t){if(t.id==='merge-pdf')return'Drop PDFs to merge';if(t.id==='images-to-pdf'||t.id==='jpg-to-pdf')return'Drop images to convert';if(t.id==='word-to-pdf'||t.id==='excel-to-pdf'||t.id==='ppt-to-pdf')return'Drop your document here';if(t.id.startsWith('pdf')||t.id.includes('pdf'))return'Drop your PDF here';return'Drop your files here'}
+function noteFor(t){if(t.c==='AI')return'Your document is processed by the configured PaperPilot AI/document workflow.';if(t.c==='Security')return'Use only files and passwords you are authorized to process.';return'Large files are validated before the job starts, with clear output and error states.'}
+function setPageOptions(tool){
+  let h='';
+  const field=(label,id,html,full=false)=>`<div class="tp-field ${full?'full':''}"><label for="tp-${id}">${label}</label>${html.replaceAll(' id="',' id="tp-')}</div>`;
+  const input=(id,type='text',placeholder='',value='')=>`<input id="${id}" type="${type}" placeholder="${placeholder}" value="${value}">`;
+  if(['compress-image','image-converter','resize-image'].includes(tool))h+=field('Quality','quality',`<div><div class="tp-range-label"><span>JPEG / WebP quality</span><b class="tp-range-value" id="tp-qVal">80</b></div><input id="quality" type="range" min="10" max="100" value="80" style="width:100%"></div>`,true);
+  if(['compress-image','resize-image'].includes(tool)){h+=field('Target width','width',input('width','number','e.g. 2400'));h+=field('Target height','height',input('height','number','e.g. 1600'))}
+  if(tool==='resize-image')h+=field('Fit mode','fit',`<select id="fit"><option value="contain">Contain</option><option value="cover">Cover</option><option value="exact">Exact</option></select>`);
+  if(tool==='image-converter')h+=field('Output format','output_format',`<select id="output_format"><option>png</option><option>jpg</option><option>webp</option><option>bmp</option><option>tiff</option></select>`);
+  if(['pdf-to-jpg','pdf-to-png','pdf-to-webp','pdf-ocr','images-to-pdf','jpg-to-pdf','pdf-scanner'].includes(tool))h+=field('Render DPI','dpi',input('dpi','number','150','150'));
+  if(['split-pdf','delete-pdf-pages','extract-pdf-pages','rotate-pdf'].includes(tool))h+=field('Pages','pages',input('pages','text','e.g. 1,3,5-7'),true);
+  if(tool==='organize-pdf')h+=field('Page order','orderText',input('orderText','text','Use 1,2,3… after reordering'),true);
+  if(tool==='rotate-pdf')h+=field('Angle','angle',`<select id="angle"><option>90</option><option>180</option><option>270</option></select>`);
+  if(['jpg-to-pdf','images-to-pdf'].includes(tool)){h+=field('Page size','page_size',`<select id="page_size"><option value="auto">Auto</option><option value="a4">A4</option></select>`);h+=field('Margin (pt)','margin',input('margin','number','0','0'))}
+  if(tool==='watermark-pdf')h+=field('Watermark text','watermark',input('watermark','text','CONFIDENTIAL','CONFIDENTIAL'),true);
+  if(tool==='watermark-pdf')h+=field('Opacity','opacity',input('opacity','number','0.18','0.18'));
+  if(tool==='number-pages'){h+=field('Start number','start_number',input('start_number','number','','1'));h+=field('Position','position',`<select id="position"><option>bottom-center</option><option>bottom-left</option><option>bottom-right</option><option>top-center</option></select>`)}
+  if(tool==='protect-pdf'||tool==='unlock-pdf')h+=field('PDF password','password',input('password','password','Enter password'),true);
+  if(tool==='chat-with-pdf')h+=field('Your question','question',`<textarea id="question" placeholder="What is this document about?"></textarea>`,true);
+  if(['edit-pdf','pdf-annotator'].includes(tool)){h+=field('Page number','edit_page',input('edit_page','number','','1'));h+=field('Annotation type','edit_type',`<select id="edit_type"><option value="text">Text note</option><option value="highlight">Highlight</option></select>`);h+=field('X position','edit_x',input('edit_x','number','','60'));h+=field('Y position','edit_y',input('edit_y','number','','60'));h+=field('Text','edit_text',`<textarea id="edit_text" placeholder="Add a note…"></textarea>`,true)}
+  if(tool==='translate-pdf')h+=field('Target language','target_language',input('target_language','text','English','English'));
+  if(tool==='redact-pdf')h+=field('Redaction rectangle','rect_json',input('rect_json','text','[{"page":1,"x0":60,"y0":60,"x1":220,"y1":90}]'),true);
+  if(['ai-pdf-summarizer','ai-question-generator'].includes(tool))h+=field('Count','count',input('count','number','','6'));
+  if(tool==='sign-pdf')h+=field('Signature text','signature',input('signature','text','Signed','Signed'),true);
+  if(tool==='pdf-scanner')h+=field('Grayscale','grayscale',`<select id="grayscale"><option>true</option><option>false</option></select>`);
+  if(!h)h=`<div class="tp-field full"><label>Ready</label><div style="padding:11px;border:1px solid var(--line2);border-radius:8px;background:var(--soft);color:#6f7882;font-size:12px;line-height:1.5">This tool is ready to run with the uploaded files. Tool-specific options appear here when available.</div></div>`;
+  $('tpOptions').innerHTML=h;
+  if($('tp-quality'))$('tp-quality').oninput=()=>$('tp-qVal').textContent=$('tp-quality').value;
+}
+function renderRelated(id){
+  const t=tools.find(x=>x.id===id);if(!t)return;
+  const same=tools.filter(x=>x.id!==id && x.c===t.c);
+  const preferred=[...same.filter(x=>['compress-pdf','merge-pdf','split-pdf','jpg-to-pdf','pdf-to-jpg','pdf-to-png','word-to-pdf','excel-to-pdf','compress-image','image-converter','resize-image'].includes(x.id)),...same];
+  const unique=[];for(const x of preferred)if(!unique.find(y=>y.id===x.id)){unique.push(x);if(unique.length===3)break}
+  $('tpRelatedGrid').innerHTML=unique.map(r=>`<button class="tp-related-card" type="button" data-tp-related="${r.id}"><span class="tp-related-icon" style="background:${r.col||'#1473e6'}">${iconSvg(r.id)}</span><span style="min-width:0"><h4>${escapeHtml(r.n)}</h4><p>${escapeHtml(r.d)}</p></span><span class="tp-related-arrow">›</span></button>`).join('');
+  $('tpRelatedGrid').querySelectorAll('[data-tp-related]').forEach(b=>b.onclick=()=>toolPage.open(b.dataset.tpRelated));
+}
+function showTpNotice(msg){
+  toast(msg);
+}
+function openTool(id){toolPage.open(id)}
+function syncToolRoute(){
+  const m=location.hash.match(/^#tool\/([^/?#]+)$/);
+  if(m&&tools.some(t=>t.id===m[1]))toolPage.open(m[1]);
+  else if(document.body.classList.contains('tool-open'))toolPage.close(false);
+}
+
+boot();
+</script>
+
+<script>
+(function bindToolPage(){
+  $('tpPickBtn').onclick=()=>$('tpFileInput').click();
+  $('tpAddMore').onclick=()=>$('tpFileInput').click();
+  $('tpFileInput').onchange=()=>{toolPage.addFiles([...$('tpFileInput').files]);$('tpFileInput').value=''};
+  const dz=$('tpDropzone');
+  ['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.add('drag')}));
+  ['dragleave','drop'].forEach(ev=>dz.addEventListener(ev,e=>{e.preventDefault();dz.classList.remove('drag')}));
+  dz.addEventListener('drop',e=>toolPage.addFiles([...e.dataTransfer.files]));
+  $('tpRunBtn').onclick=()=>toolPage.run();
+  $('tpClearBtn').onclick=()=>{toolPage.reset();toolPage.decorate(selectedTool)};
+  $('toolBack').onclick=()=>toolPage.close(true);
+  $('tpBackAfter').onclick=()=>toolPage.close(true);
+  $('tpViewAll').onclick=()=>toolPage.close(true);
+  $('tpProcessAgain').onclick=()=>{ $('tpResult').classList.remove('show');$('tpProgress').classList.remove('show');$('tpRunBtn').textContent='Process files';$('tpRunBtn').disabled=tpFiles.length===0; window.scrollTo({top:0,behavior:'smooth'})};
+  window.addEventListener('hashchange',syncToolRoute);
+  window.addEventListener('popstate',syncToolRoute);
+  if(location.hash.startsWith('#tool/'))setTimeout(syncToolRoute,0);
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs" type="module"></script>
+<script type="module">import * as pdfjsLib from 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs';pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs';window.pdfjsLib=pdfjsLib;</script>
+</body>
+</html>
